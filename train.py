@@ -33,12 +33,14 @@ def monitor_metrics(outputs, targets):
 
 def run():
 
-    df_train=preprocess('./review-sentence_train_clean.csv')
-    df_valid=preprocess('./review-sentence_dev_clean.csv')
+    df_train=preprocess('./csvs/review_sentence_train.csv')
+    df_valid=preprocess('./csvs/review_sentence_dev.csv')
 
 
     df_train = df_train.reset_index(drop=True)
     df_valid = df_valid.reset_index(drop=True)
+
+    print(df_train)
 
     train_dataset = dataset.BERTDataset(
         review=df_train.sentence.values, target=df_train.ENCODE_CAT.values
@@ -85,7 +87,8 @@ def run():
 
 
     best_accuracy = 0
-    for epoch in range(config.EPOCHS):
+    #for epoch in range(config.EPOCHS):
+    for epoch in range(100):
         engine.train_fn(train_data_loader, model, optimizer, device, scheduler, epoch)
         outputs, targets = engine.eval_fn(valid_data_loader, model, device, epoch)
         accuracy =  metrics.accuracy_score(outputs, targets)
