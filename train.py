@@ -26,17 +26,14 @@ def preprocess(filename, label):
 def monitor_metrics(outputs, targets):
     if targets is None:
         return {}
-    print(outputs.size())
     outputs = torch.argmax(outputs, dim=0).cpu().detach().numpy()
     targets = targets.cpu().detach().numpy()
     accuracy = metrics.accuracy_score(targets, outputs)
     return accuracy
 
 
-def process_dataset(input_filename, label, batch_size, num_workers):
-  df = preprocess(input_filename, label)
+def process_dataset(df, batch_size, num_workers):
   df = df.reset_index(drop=True)
-  print(df.head())
   this_dataset = dataset.BERTDataset(
         review=df.sentence.values, target=df.ENCODE_CAT.values
     )
@@ -59,6 +56,12 @@ def run():
         'dev': train_filename.replace('train', 'dev'),
         'test':train_filename.replace('train', 'test')}
 
+    dataframes = {}
+    num_classes = 0
+    for subset, filename in filenames.items():
+      dataframes[subset] = preprocess(filename, label)
+      num_classes = max(num_classes, max(dataframes[subset].ENCODE_CAT) + 1)
+
     dataloaders = {}
     for subset, filename in filenames.items():
       if subset == 'train':
@@ -68,10 +71,10 @@ def run():
         batch_size = config.VALID_BATCH_SIZE
         num_worker = 1
       dataloaders[subset] = process_dataset(
-          filename, label, batch_size, num_workers)
+          dataframes[subset], batch_size, num_workers)
 
     device = torch.device(config.DEVICE)
-    model = BERTBaseUncased()
+    model = BERTBaseUncased(num_classes)
     model.to(device)
 
     param_optimizer = list(model.named_parameters())
@@ -120,7 +123,6 @@ def run():
 
     model.load_state_dict(torch.load(model_path))
     for subset in ['train', 'dev', 'test']:
-      df = preprocess(filenames[subset], label)
       outputs, targets = engine.eval_fn(
             dataloaders[subset], model, device, epoch)
 
@@ -129,7 +131,7 @@ def run():
         result_df_dicts.append({"output":o, "target":t})
 
       result_df = pd.DataFrame.from_dict(result_df_dicts)
-      final_df = pd.concat([df, result_df], axis=1)
+      final_df = pd.concat([dataframes[subset], result_df], axis=1)
       for i in final_df.itertuples():
         assert i.ENCODE_CAT == i.target
 
