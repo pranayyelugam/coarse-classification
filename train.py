@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.ERROR)
 def preprocess(filename, label):
   df = pd.read_csv(filename)
   df = df[['sentence',label]]
-  df = df.dropna()
+  #df = df.dropna()
   df['ENCODE_CAT'] = df[label].astype('category').cat.codes
   return df
 
@@ -61,6 +61,8 @@ def run():
     for subset, filename in filenames.items():
       dataframes[subset] = preprocess(filename, label)
       num_classes = max(num_classes, max(dataframes[subset].ENCODE_CAT) + 1)
+      print(dataframes[subset])
+      print(len(dataframes[subset]))
 
     dataloaders = {}
     for subset, filename in filenames.items():
@@ -116,7 +118,7 @@ def run():
             torch.save(model.state_dict(), model_path)
             best_val_accuracy = accuracy
             best_val_epoch = epoch
-            print("Best val accuracy till now {}".format(best_accuracy))
+            print("Best val accuracy till now {}".format(best_val_accuracy))
 
         if best_val_epoch < (epoch - config.PATIENCE):
           break
@@ -131,6 +133,7 @@ def run():
         result_df_dicts.append({"output":o, "target":t})
 
       result_df = pd.DataFrame.from_dict(result_df_dicts)
+
       final_df = pd.concat([dataframes[subset], result_df], axis=1)
       for i in final_df.itertuples():
         assert i.ENCODE_CAT == i.target
