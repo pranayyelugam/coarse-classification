@@ -1,3 +1,4 @@
+import csv
 import config
 import dataset
 import engine
@@ -6,6 +7,7 @@ import pandas as pd
 import torch.nn as nn
 import numpy as np
 import sys
+import json
 
 from model import BERTBaseUncased
 from sklearn import model_selection
@@ -16,12 +18,21 @@ from transformers import get_linear_schedule_with_warmup
 import logging
 logging.basicConfig(level=logging.ERROR)
 
+with open("labels.json", 'r') as f:
+  label_map = json.load(f)
+
 def preprocess(filename, label):
-  df = pd.read_csv(filename)
-  df = df[['sentence',label]]
-  #df = df.dropna()
-  df['ENCODE_CAT'] = df[label].astype('category').cat.codes
-  return df
+  dicts = []
+  with open(filename, 'r') as f:
+    r = csv.DictReader(f)
+    for row in r:
+      label_val = row[label]
+      dicts.append({
+        'sentence': row["sentence"],
+        label: row[label],
+        'ENCODE_CAT': label_map[label].index(row[label])
+        })
+  return pd.DataFrame.from_dict(dicts)
 
 def monitor_metrics(outputs, targets):
     if targets is None:
@@ -49,7 +60,7 @@ def run():
 
     train_filename, label = sys.argv[1:3]
 
-    model_path = "models/" + label + "_best.pt"
+    model_path = "models2/" + label + "_best.pt"
 
     assert 'train' in train_filename
     filenames = {'train': train_filename,
@@ -61,8 +72,6 @@ def run():
     for subset, filename in filenames.items():
       dataframes[subset] = preprocess(filename, label)
       num_classes = max(num_classes, max(dataframes[subset].ENCODE_CAT) + 1)
-      print(dataframes[subset])
-      print(len(dataframes[subset]))
 
     dataloaders = {}
     for subset, filename in filenames.items():
@@ -138,7 +147,7 @@ def run():
       for i in final_df.itertuples():
         assert i.ENCODE_CAT == i.target
 
-      result_file = "results/" + subset + "_" + label + ".csv"
+      result_file = "results2/" + subset + "_" + label + ".csv"
       final_df.to_csv(result_file)
 
 
