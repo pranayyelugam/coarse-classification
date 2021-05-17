@@ -1,0 +1,558 @@
+id,sentence,coarse,fine,pol,asp
+3939,[Summary]:,Structuring,Structuring.Heading,,
+3940,This paper tackles the problem of automatic robot design.,Structuring,Structuring.Summary,,
+3941,The most popular approach to doing this has been evolutionary methods which work by evolving morphology of agents in a feed-forward manner using a propagation and mutation rules.,Structuring,Structuring.Summary,,
+3942,This is a non-differentiable process and relies on maintaining a large pool of candidates out of which best ones are chosen with the highest fitness.,Structuring,Structuring.Summary,,
+3943,"In robot design for a given task using rewards, training each robot design using RL with rewards is an expensive process and not scalable.",Structuring,Structuring.Summary,,
+3944,This paper uses graph network to train each morphology using RL.,Structuring,Structuring.Summary,,
+3945,"Thereby, allowing the controller to share parameters and reuse information across generations.",Structuring,Structuring.Summary,,
+3946,This expedites the score function evaluation improving the time complexity of the evolutionary process.,Structuring,Structuring.Summary,,
+3947,[Strengths]:,Structuring,Structuring.Heading,,
+3948,This paper shows some promise when graph network-based controllers augmented with evolutionary algorithms.,Evaluative,Evaluative,P-Positive,Motivation/Impact
+3949,Paper is quite easy to follow.,Evaluative,Evaluative,P-Positive,Clarity
+3950,[Weaknesses and Clarifications]:,Structuring,Structuring.Heading,,
+3951,=> Robot design area has been explored extensively in classical work of Sims (1994) etc. using ES.,Fact,Fact,,
+3952,"Given that, the novelty of the paper is fairly incremental as it uses NerveNet to evaluate fitness and ES for the main design search.",Evaluative,Evaluative,N-Negative,Originality
+3953,=> Environment: The experimental section of the paper can be further improved.,Request,Request.Experiment,N-Negative,Substance
+3954,"The approach is evaluated only in three cases: fish, walker, cheetah. Can it be applied to more complex morphologies? Humanoid etc. maybe?",Request,Request.Experiment,U-Neutral,Clarity
+3955,=> Baselines: The comparison provided in the paper is weak.,Evaluative,Evaluative,N-Negative,Meaningful Comparison
+3956,"At first, it compares to random graph search and ES.",Structuring,Structuring.Quote,,
+3957,But there are better baselines possible.,Evaluative,Evaluative,N-Negative,Meaningful Comparison
+3958,One such example would be to have a network for each body part and share parameters across each body part.,Fact,Fact,,
+3959,"This network takes some identifying information (ID, shape etc.) about body part as input.",Fact,Fact,,
+3960,"As more body parts are added, more such network modules can be added.",Fact,Fact,,
+3961,How would the given graph network compare to this?,Request,Request.Explanation,N-Negative,Soundness/Correctness
+3962,This baseline can be thought of a shared parameter graph with no message passing.,Fact,Fact,,
+3963,=> The results shown in Figure-4 (Section-4.2) seems unclear to me.,Evaluative,Evaluative,N-Negative,Clarity
+3964,"As far as I understand, the model starts with hand-engineered design and then finetuned using evolutionary process.",Structuring,Structuring.Summary,,
+3965,"However, the original performance of the hand-engineered design is surprisingly bad (see first data point in any plot in Figure-4).",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3966,"Does the controller also start from scratch? If so, why? Also, it is not clear what is the meaning of generations if the graph is fixed, can't it be learned altogether at once?",Request,Request.Explanation,N-Negative,Soundness/Correctness
+3967,[Recommendation]:,Structuring,Structuring.Heading,,
+3968,I request the authors to address the comments raised above.,Structuring,Structuring.Quote,,
+3969,"Overall, this is a reasonable paper but experimental section needs much more attention.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3970,"The contributions of this paper are in the domain of policy search, where the authors combine evolutionary and gradient-based methods.",Structuring,Structuring.Summary,,
+3971,"Particularly, they propose a combination approach based on cross-entropy method (CEM) and TD3 as an alternative to existing combinations using either a standard evolutionary algorithm or a goal exploration process in tandem with the DDPG algorithm.",Structuring,Structuring.Summary,,
+3972,"Then, they show that CEM-RL has several advantages compared to its competitors and provides a satisfactory trade-off between performance and sample efficiency.",Structuring,Structuring.Summary,,
+3973,"The authors evaluate the resulting algorithm, CEM-RL, using a set of benchmarks well established in deep RL, and they show that CEM-RL benefits from several advantages over its competitors and offers a satisfactory trade-off between performance and sample efficiency.",Structuring,Structuring.Summary,,
+3974,"It is a pity to see that the authors provide acronyms without explicitly explaining them such as DDPG and TD3, and this right from the abstract.",Request,Request.Typo,N-Negative,Clarity
+3975,"The parer is  in general interesting, however the clarity of the paper is hindered",Evaluative,Evaluative,N-Negative,Clarity
+3976,"by the existence of several typos, and the writing in certain passages can be improved. Example of typos include  “an surrogate gradient”, “""an hybrid algorithm”,  “most fit individuals are used ” and so on…",Request,Request.Typo,N-Negative,Clarity
+3977,In the related work the authors present the connection between their work and contribution to the state of the art in a detailed manner.,Evaluative,Evaluative,P-Positive,Substance
+3978,"Similarly, in section 3 the authors provide an extensive background allowing to understand their proposed method.",Evaluative,Evaluative,P-Positive,Substance
+3979,"In equation 1, 2 the updates of  \mu_new and \sigma_new uses \lambda_i, however the authors provide common choices for \lambda without any justification or references.",Request,Request.Edit,N-Negative,Substance
+3980,The proposed method is clearly explained and seems convincing.,Evaluative,Evaluative,P-Positive,Clarity
+3981,However the theoretical contribution is poor. And the experiment uses a very classical benchmark providing simulated data.,Evaluative,Evaluative,N-Negative,Originality
+3982,"1. In the experimental study, the authors present the value of their tuning parameters (learning rate, target rate, discount rate…) at the initialisation phase without any justifications. And the experiments are limited to simulated data obtained from MUJOCO physics engine - a very classical benchmark.",Evaluative,Evaluative,N-Negative,Substance
+3983,2. Although the experiments are detailed and interesting they support poor theoretical developments and use a very classical benchmark,Evaluative,Evaluative,N-Negative,Originality
+3984,The rebuttal provided by the authors is convincing.,Other,Other,,
+3985,MEASURING DENSITY AND SIMILARITY OF TASK RELEVANT INFORMATION IN NEURAL REPRESENTATIONS,Structuring,Structuring.Heading,,
+3986,Summary:,Structuring,Structuring.Heading,,
+3987,This work attempts to define two kinds of metrics (metrics for information density and for information similarity) for the sake of automatically detecting similarity between tasks so that transfer learning can be done more efficiently.,Structuring,Structuring.Summary,,
+3988,"The concepts are clearly explained, and the metric for information density seems to match up with intuitions coming out of forward selections approaches.",Evaluative,Evaluative,P-Positive,Clarity
+3989,The metric for information transfer seems to be the commonplace metric that other works default to when they show that pre-trained representations are effective on downstream tasks.,Fact,Fact,,
+3990,"It is not clear that the notion of similarity through classifier weights makes sense, but see below for clarification questions.",Structuring,Structuring.Heading,,
+3991,"The problem addressed (automatic similarity scoring of tasks) is important for transfer learning, and thus the results have potential to be very impactful if they generalize to other kinds of tasks; as is, they seem to apply only to classification tasks, but that is a good step.",Evaluative,Evaluative,P-Positive,Motivation/Impact
+3992,Pros:,Structuring,Structuring.Heading,,
+3993,Clearly written; experiments on the datasets chosen do seem to suggest that the proposed methods have potential.,Evaluative,Evaluative,P-Positive,Clarity
+3994,Brings in nice intuition from forward feature selection.,Evaluative,Evaluative,P-Positive,Originality
+3995,An important problem with potential for high impact.,Evaluative,Evaluative,P-Positive,Motivation/Impact
+3996,Cons:,Structuring,Structuring.Heading,,
+3997,It is not clear to me that the classifier difference metric is well-defined.,Evaluative,Evaluative,N-Negative,Substance
+3998,Is there a constraint on the CFS and classifiers that ensure the difference between the weights really captures what is suggested?,Request,Request.Clarification,U-Neutral,Clarity
+3999,"Is it not the case that classifier weights could come out quite different despite the tasks being quite similar if the linear classifiers learned to capitalize on dissimilar, yet equally fruitful patterns in the input features?",Request,Request.Clarification,U-Neutral,Soundness/Correctness
+4000,Do you have thoughts on how this could be applied outside the context of sentence representations and further outside the context of classification?,Request,Request.Explanation,U-Neutral,Substance
+4001,"Those seem to be quite limiting features of these methods, which is not to say that they are not useful in that realm, but only to clarify my understanding of their possible scope of application.",Evaluative,Evaluative,N-Negative,Substance
+4002,"These classification datasets are often so close, that I do wonder whether even simpler methods would work just as well.",Social,Social,,
+4003,"For example, clustering on bags-of-words might also show that SST, SST-fine, and IMDb are close/similar/transferable.",Fact,Fact,,
+4004,The same could be said for SICK and SNLI.,Fact,Fact,,
+4005,It would be nice to see a comparison to such baselines in order to get a sense of how the proposed methods give insights that other unsupervised or supervised methods might give just as well.,Request,Request.Experiment,P-Positive,Meaningful Comparison
+4006,"Otherwise, it is hard to tell how significant these correlations are. Since the end goal is to determine transferability of tasks and not the methods, it does seem like there are simpler baselines that you could compare against.",Request,Request.Experiment,P-Positive,Meaningful Comparison
+4007,"The author's present a dual learning framework that, instead of using a single mapping for each mapping task between two respective domains, the authors learn multiple diverse mappings.",Structuring,Structuring.Summary,,
+4008,These diverse mappings are learned before the two main mappings are trained and are kept constant during the training of the two main mappings.,Structuring,Structuring.Summary,,
+4009,"Though I am not familiar with BLEU scores and though I didn't grasp some of the details in 3.1, the algorithm yielded consistent improvement over the given baselines.",Structuring,Structuring.Summary,,
+4010,The author's included many different experiments to show this.,Structuring,Structuring.Summary,,
+4011,The idea that multiple mappings will produce better results than a single mapping is reasonable given previous results on ensemble methods.,Structuring,Structuring.Summary,,
+4012,"For the language translation results, were there any other state-of-the-art methods that the authors could compare against? It seems they are only comparing against their own implementations.",Request,Request.Clarification,N-Negative,Substance
+4013,Objectively saying that the author's method is better than CycleGAN is difficult. How does their ensemble method compare to just their single-agent dual method? Is there a noticeable difference there?,Request,Request.Clarification,N-Negative,Soundness/Correctness
+4014,Minor Comments:,Structuring,Structuring.Heading,,
+4015,Dual-1 and Dual-5 are introduced without explanation.,Evaluative,Evaluative,N-Negative,Replicability
+4016,"Perhaps I missed it, but I believe Dan Ciresan's paper ""Multi-Column Deep Neural Networks for Image Classification"" should be cited.",Request,Request.Edit,N-Negative,Meaningful Comparison
+4017,###,Structuring,Structuring.Heading,,
+4018,After reading author feedback,,,,
+4019,Thank you for the feedback.,Social,Social,,
+4020,After reading the updated paper I still believe that 6 is the right score for this paper.,Fact,Fact,,
+4021,The method produces better results using ensemble learning.,Structuring,Structuring.Summary,,
+4022,"While the results seem impressive, the method to obtain them is not very novel; nonetheless, I would not have a problem with it being accepted, but I don't think it would be a loss if it were not accepted.",Fact,Fact,,
+4023,"The paper proposed an interesting algorithm and direction, which tries fill the gap of NN in tabular data learning.",Structuring,Structuring.Summary,,
+4024,"My concern is, given this is an empirical work,  the number of datasets used in evolution is a bit small.",Evaluative,Evaluative,N-Negative,Substance
+4025,"Also, xgboost was the winning algorithm for many competitions for tabular data, would be good to compare the NN with properly optimised xgboost.",Evaluative,Evaluative,N-Negative,Substance
+4026,"In chapter 2, related work.",Other,Other,,
+4027,"The authors state that ""tree-based models still yield two obvious shortages: (1) Hard to be integrated into complex end-to-end frameworks... (2) Hard to learn from streaming data.",Fact,Fact,,
+4028,To me these two reasoning statements are not particularly convincing. One could also say:,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4029,NN models yield two obvious shortages: (1) Hard to be integrated into complex end-to-end frameworks... (2) Hard to learn from streaming data...,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4030,"Actually, tree ensemble based algorithms, eg Hoeffding tree ensembles, are among the best performed algorithms for data streaming tasks.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4031,"In this paper the authors proposed a new policy gradient method, which is known as the angular policy gradient (APG), that aims to provide provably lower variance in the gradient estimate.",Structuring,Structuring.Summary,,
+4032,Here they presented a stochastic policy gradient method for directional control.,Structuring,Structuring.Summary,,
+4033,"Under the set of parameterized Gaussian policies, they presented a unified analysis of the variance of APG and showed how it theoretically outperform (in terms of having lower variance) than other state-of-the art methods.",Structuring,Structuring.Summary,,
+4034,"They further evaluated the APG algorithms on a grid-world navigation domain as well as the King of Glory task, and showed that the APG estimator significantly out-performs the standard policy gradient.",Structuring,Structuring.Summary,,
+4035,In general I think this paper addressed an important issue in policy gradient in terms of deriving a lower variance gradient estimate.,Evaluative,Evaluative,P-Positive,Motivation/Impact
+4036,"In particular the authors showed that under the parameterized marginal distribution, such as the angular Gaussian distribution, the corresponding APG estimate has a lower variance estimate than that of CAPG.",,,,
+4037,"Furthermore, I also appreciate that they evaluated these results in realistic experiments such as the RTS game domains.",Evaluative,Evaluative,P-Positive,Substance
+4038,My only question is on the possibility of deriving realistic APG algorithms beyond the class of angular Gaussian policy.,Request,Request.Experiment,U-Neutral,Substance
+4039,"In terms of the layout of the paper, I would also recommend including the exact algorithm pseudo-code used in the main paper.",Request,Request.Experiment,U-Neutral,Substance
+4040,The paper proposes a recurrent knowledge graph (bipartite graph between entities and location nodes) construction & updating mechanism for entity state tracking datasets such as (two) ProPara tasks and Recipes.,Structuring,Structuring.Summary,,
+4041,The model goes through the following three steps: 1) it reads a sentence at each time step t and identifies the location of each entity via machine reading comprehension model such as DrQA (entities are predefined).,Structuring,Structuring.Summary,,
+4042,"2) Co-reference module adjusts relationship scores (soft adjacency matrix) among nodes, including possibly new nodes introduced by the MRC model.",Structuring,Structuring.Summary,,
+4043,"3) to propagate the relational information across all the nodes, the model performs L layers of LSTM for each entity that attend on other nodes via attention (where the weights come from the adjacency matrix).",Structuring,Structuring.Summary,,
+4044,The model repeats the three steps for each sentence.,Structuring,Structuring.Summary,,
+4045,"The model is trained by directly supervising for the correct span by the MRC model at each time step, which is possible because the data provides strong supervision for each sentence (not just the answer at the end).",Structuring,Structuring.Summary,,
+4046,The model achieves the state of the art in the two tasks of ProPara and Recipes dataset.,Structuring,Structuring.Summary,,
+4047,Strengths: The paper provides an elegant solution for tracking relationship between entities as time (sentence) progresses.,Evaluative,Evaluative,P-Positive,Motivation/Impact
+4048,I also agree with the authors that this line of work (dynamic KG construction and modification) is an important area of research.,Evaluative,Evaluative,P-Positive,Motivation/Impact
+4049,"While the model shares a similar spirit to EntNet, I think the model has enough distinctions / contributions, especially given that it outperforms EntNet by a large margin.",Evaluative,Evaluative,P-Positive,Originality
+4050,The model also obtains non-trivial improvement over previous SOTA models.,Evaluative,Evaluative,P-Positive,Originality
+4051,Weaknesses: Paper could have been written better. I had hard time understanding it.,Evaluative,Evaluative,N-Negative,Clarity
+4052,The notations are overall confusing and not explained well.,Evaluative,Evaluative,N-Negative,Clarity
+4053,Also there are a few unclear parts which I discuss in questions below.,Structuring,Structuring.Heading,,
+4054,Questions:,Structuring,Structuring.Heading,,
+4055,"1. Are e_{i,t} and lambda_{i,t} vectors?",Request,Request.Clarification,N-Negative,Clarity
+4056,Scalars?,,,,
+4057,Abstract node notations? It is not clear in the model section.,,,,
+4058,"Also, it took me a long time to figure out that ‘i’ is used to index each entity (it is mentioned later).",Evaluative,Evaluative,N-Negative,Clarity
+4059,2. The paper says v_i (initial representation of each entity) is obtained by looking at the contextualized representations (LSTM outputs) of entity mention in the context.,Structuring,Structuring.Quote,,
+4060,What happens if there are multiple mentions in the text? Which one does it look at?,Request,Request.Explanation,U-Neutral,Soundness/Correctness
+4061,"3. For the LSTM in the graph update, why does it have only one input? Shouldn’t it have two inputs, one for previous hidden state and the other for input?",Request,Request.Clarification,U-Neutral,Soundness/Correctness
+4062,"4. Regarding Recipe experiments, the paper says it reaches a better performance than the baseline using just 10k examples out of 60k.",Structuring,Structuring.Quote,,
+4063,"This is great, but could you also report the number when the full dataset is used?",Request,Request.Edit,U-Neutral,Replicability
+4064,5. What does it mean that in training time the model “updates” the location node representation with the encoding of correct span. Do you mean you use the encoding instead?,Request,Request.Explanation,U-Neutral,Soundness/Correctness
+4065,"6. For ProPara task 2, what threshold did you choose to obtain the P/R/F1 score?",Request,Request.Explanation,U-Neutral,Replicability
+4066,Is it the threshold that maximizes F1?,Request,Request.Clarification,U-Neutral,Clarity
+4067,This paper proposes a hybrid machine learning algorithm using Gradient Boosted Decision Trees (GBDT) and Deep Neural Networks (DNN).,Structuring,Structuring.Summary,,
+4068,The intended research direction on tabular data is essential and promising.,Evaluative,Evaluative,P-Positive,Motivation/Impact
+4069,"However, the proposed technique does not seem to be handling the problem foundationally well.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4070,It seems heavily dependent on GBDT.,Evaluative,Evaluative,N-Negative,Originality
+4071,It also shows itself in the results that final algorithm is almost indistinguishable from GBDT regarding results.,Evaluative,Evaluative,N-Negative,Substance
+4072,"Moreover, I  don't think that the data sets in experiments are good enough to cover the importance and the nature of the problem.",Evaluative,Evaluative,N-Negative,Substance
+4074,"-This is a crucial line of research direction that aims to make DNNs applicable to many real-world problems (beyond speech and vision) in which discrete data and heterogeneous features exist such as engagement prediction, recommendation, and search.",Evaluative,Evaluative,P-Positive,Motivation/Impact
+4075,-The starting point of using GBDT seems like a good choice.,Evaluative,Evaluative,P-Positive,Soundness/Correctness
+4076,-The Paper is mostly well written except occasional repetitions and missing acronym definitions.,Evaluative,Evaluative,P-Positive,Clarity
+4078,"-The proposed technique does not seem to be original enough, and it does not handle the problem foundationally well.",Evaluative,Evaluative,N-Negative,Originality
+4079,I do not think that there is enough justification/demonstration for the fact that a general NN solution for Tabular Data invented.,Evaluative,Evaluative,N-Negative,Substance
+4080,The proposed technique is heavily dependent on GBDT (Indeed the algorithm and the learned trees are used at least three times).,Evaluative,Evaluative,N-Negative,Originality
+4081,"This shows itself in the results; i.e., the proposed algorithm is either negligibly performing better than GBDT or when  GBDT dependence removed, it performs worse. It seems to me",Evaluative,Evaluative,N-Negative,Substance
+4082,"that (except the minor small section of streaming data), the paper is more like a proper verification of how tree-based learning algorithms work very well in tabular data--which is far from the basis of the paper and does not make the paper novel enough for ICLR.",Evaluative,Evaluative,N-Negative,Originality
+4083,-The proposed technique seems to include very heavy feature engineering and several ad-hoc practical steps--that is far from the motivation of using NN in tabular data.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4084,-In the provided benchmark data sets the depth of the analysis seems to be enough.,Evaluative,Evaluative,P-Positive,Substance
+4085,"However, in the proposed domain of tabular data, often data sets are significantly more high dimensional in reality and include at least one set of sparse large dimensional features",Evaluative,Evaluative,N-Negative,Substance
+4086,"(e.g., unstructured raw text for the search queries.) In such scenarios, it had been showed that wide-and-deep NNs perform decently.",Fact,Fact,,
+4087,However such problems are entirely missing in the results section.,Evaluative,Evaluative,N-Negative,Substance
+4088,I also think that this is a lost opportunity for the authors as they could be showing that it is the NN part contributing.,Evaluative,Evaluative,N-Negative,Substance
+4089,This paper gives a theoretical analysis of an interesting statistical physics technique known as replica exchange.,Structuring,Structuring.Summary,,
+4090,"The basic idea is that Langevin dynamics at low temperature is slow to converge, and that one could potentially boost the convergence by alternating between low and high temperature.",Structuring,Structuring.Summary,,
+4091,"At the extreme one could imagine running in parallel a random search and a gradient descent, and ``teleporting"" the gradient descent algorithm whenever the random search algorithm finds a point with better value.",Structuring,Structuring.Summary,,
+4092,This makes a lot of sense and it is nice to see a theoretical analysis of this.,Evaluative,Evaluative,P-Positive,Substance
+4093,"The mathematics are sound, but I do not know whether it is an appropriate submission for ICLR.",Evaluative,Evaluative,P-Positive,Soundness/Correctness
+4094,"One comment from the math side: it would be interesting (albeit probably difficult) to study kappa in (3.10) as a function of a. In particular at face value it looks like one only benefits from taking a larger, so why not study the limiting behavior of a->infty? What is the limiting value of kappa? Can you perform those calculations in the convex case at least?",Request,Request.Experiment,U-Neutral,Substance
+4095,"This paper tries to quantify how ""dense"" representations we need for a specific task -- more specifically, how many dimensions are needed from a given representation (for a given task) to achieve a percentage of the performance of the entire representation.",Structuring,Structuring.Summary,,
+4096,The second thing the paper tries to quantify is how well representations learned for one task can be fine tuned for another.,Structuring,Structuring.Summary,,
+4097,Experiments are conducted with 4 different representation technique on a dozen or so tasks.,Structuring,Structuring.Summary,,
+4098,"Quick summary: While I liked aspects of this -- including the motivation of having a lightweight way of understanding how well representations transfer across tasks, overall my concerns surrounding the methodology and some missing analysis leads me to believe this needs more work before it is ready for publication.",Request,Request.Experiment,U-Neutral,Soundness/Correctness
+4099,Quality: Below average,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4100,I believe the proposed techniques have some flaws which hurt the eventual method.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4101,There are also concerns about the motivations behind parts of the technique.,Evaluative,Evaluative,N-Negative,Motivation/Impact
+4102,Clarity: Fair,Evaluative,Evaluative,U-Neutral,Clarity
+4103,There were some experimental details that were poorly explained but in general the paper was readable.,Evaluative,Evaluative,N-Negative,Clarity
+4104,Originality: Fair,Evaluative,Evaluative,U-Neutral,Originality
+4105,There were some nice ideas in the work but I remain concerned about aspects of it.,Evaluative,Evaluative,U-Neutral,Substance
+4106,Significance: Below average,Evaluative,Evaluative,N-Negative,Motivation/Impact
+4107,My concern is that the flaws in the method do not make it conducive to use as is.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4108,Strengths / Things I liked:,Social,Social,,
+4109,+ I really liked the motivating problem of being able to (hopefully cheaply / efficiently) estimate transfer potential to understand how well representations will perform on a different task.,Evaluative,Evaluative,P-Positive,Motivation/Impact
+4110,+ Multiple representations and tasks experimented with,Evaluative,Evaluative,P-Positive,Motivation/Impact
+4111,Weaknesses / Things that concerned me:,Social,Social,,
+4112,(In no specific order),Other,Other,,
+4113,- (W1) Adversely affected by rotations: One of my big concerns with the work is the way the CFS is computed.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4114,"While it seems ok to estimate these different metrics using only linear models, my concern with this is that the linear models are only given a subset of the **exact** dimensions of the original representations.",Evaluative,Evaluative,N-Negative,Substance
+4115,This is very much unlike the learning objectives of most of these representation learning methods and hence is highly biased and dependent on the actual methods and the random seeds used and the rotations it performs. (In many cases the representations are used starting with a fully connected layer bottom layer on top of the representations and hence rotations of the representations do not affect performance),Evaluative,Evaluative,N-Negative,Substance
+4116,Let's take an example: Say there is a single dimension of the representation that is a perfect predictor of a task.,Evaluative,Evaluative,N-Negative,Substance
+4117,Suppose we rotated these representations. Now the signal from the original dimension is split across multiple dimensions and hence the CFS may be deceivingly high.,Evaluative,Evaluative,N-Negative,Substance
+4118,To me this is a big concern as different runs of the same representation technique can likely have very different CFS scores based on initializations and random seeds.,Evaluative,Evaluative,N-Negative,Substance
+4119,- (W2) Related to the last line: I did not see any experiments / analysis showing how stable these different numbers are across different runs of the representation technique. Nor did I see any error bars in the experiments.,Evaluative,Evaluative,N-Negative,Substance
+4120,This again greatly concerned me as I am not certain how stable these metrics are.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4121,- (W3) Baselines for transfer learning: I felt this was another notable oversight.,Evaluative,Evaluative,N-Negative,Substance
+4122,"I would have liked to see results for both trivial baselines like random ranking as well as more informed baselines where we can estimate transfer potential using say k representation techniques, and then use that to help us understand how well it would do on the other representations.",Request,Request.Experiment,N-Negative,Soundness/Correctness
+4123,This latter baseline is a zero-cost baseline as it is not even dependent on the method.,Evaluative,Evaluative,N-Negative,Substance
+4124,"- (W4) Metrics for ranking of transfer don't make sense (and some are missing) : I also don't understand how ""precision"" and NDCG are used as metrics.",Evaluative,Evaluative,N-Negative,Clarity
+4125,"Based on my understanding the authors rank (which itself is questionable) the different tasks in order of potential for transfer and then call this the ""gold"" set. How is precision and NDCG calculated from this?",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4126,More importantly I don't believe looking at rank alone is sufficient since that completely obscures the actual performance numbers obtained via transfer.,Evaluative,Evaluative,U-Neutral,Soundness/Correctness
+4127,In most cases I would care about how well my model would perform on transfer not just which tasks I should transfer from. I would have wanted to understand something like the correlation of these produced scores with the actual ground truth performance numbers.,Evaluative,Evaluative,N-Negative,Clarity
+4128,- (W5) Multi-task learning: I did not see any mention or experiments of what can be expected when the representations are themselves trained on multiple tasks.,Evaluative,Evaluative,N-Negative,Substance
+4129,(This seems like something that could easily be done in the empirical analysis as well and would provide richer empirical signals as well),Evaluative,Evaluative,N-Negative,Substance
+4130,- (W6) Motivation for CFS: I still don't fully understand the need to understand the density of the representation (especially in the manner proposed in the paper). Why is this an important problem? Perhaps expanding on this would be helpful,Evaluative,Evaluative,N-Negative,Motivation/Impact
+4131,-,Other,Other,,
+4132,(W7) Alternatives to CFS / Computational concerns: A big concern I had was the computational expense of the proposed approach. Unfortunately I did not see any discussion about this in the paper or empirically.,Evaluative,Evaluative,N-Negative,Substance
+4133,"I find this striking because I can easily come up with cheaper alternatives to get at this ""density"".",Evaluative,Evaluative,N-Negative,Other
+4134,For example using LASSO / LARS like methods you can perhaps figure out a good reduced dimension set more efficiently.,Evaluative,Evaluative,N-Negative,Substance
+4135,If I were to go through the computation of then why not just train a smaller version of that representation technique instead and **directly** see how well it can encode data in k dimensions via that technique / for that task?,Evaluative,Evaluative,N-Negative,Clarity
+4136,Alternatively why not try using a factorization technique to reduce the rank and then see how well the method does for different ranks?,Evaluative,Evaluative,N-Negative,Meaningful Comparison
+4138,(W7b) Likewise I wonder if we could just measure transfer more directly as well and why we need to go via these CFS sets,Evaluative,Evaluative,N-Negative,Substance
+4139,- (W8),Other,Other,,
+4140,The proposed  CLF weight difference method has some concerning aspects as well.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4141,For example say we had two task with exact opposite labels.,Evaluative,Evaluative,N-Negative,Clarity
+4142,They would have a very low weight difference score though they are ideal representations for each other.,Evaluative,Evaluative,N-Negative,Clarity
+4143,Likewise looking at a difference of weight vectors seems arbitrary in other ways as well.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4144,"This paper proposes simple metrics for measuring the ""information density"" in learned representations.",Structuring,Structuring.Heading,,
+4145,"Overall, this is an interesting direction.",Evaluative,Evaluative,P-Positive,Substance
+4146,"However there are a few key weaknesses in my view, not least that the practical utility of these metrics is not obvious, since they require supervision in the target domain.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4147,"And while there is an argument to be made for the inherent interestingness of exploring these questions, this angle would be more compelling if multiple encoder architectures were explored and compared.",Evaluative,Evaluative,N-Negative,Meaningful Comparison
+4148,"+ The overarching questions that the authors set out to answer: How task-specific information is stored and to what extent this transfers, is inherently interesting and important.",Evaluative,Evaluative,P-Positive,Motivation/Impact
+4149,+ The proposed metrics and simple and intuitive.,Evaluative,Evaluative,P-Positive,Originality
+4150,+ It is interesting that a few units seem to capture most task specific information.,Evaluative,Evaluative,P-Positive,Originality
+4151,- The envisioned scenario (and hence utility) of these metrics is a bit unclear to me here.,Request,Request.Explanation,N-Negative,Substance
+4152,"As noted by the authors, transfer is most attractive in low-supervision regimes, w.r.t. the target task.",Structuring,Structuring.Quote,,
+4153,Yet the metrics proposed depend on supervision in the target domain.,Evaluative,Evaluative,N-Negative,Substance
+4154,"If we already have this, then -- as the authors themselves note -- it is trivial to simply try out different source datasets empirically on a target dev set.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4155,"It is argued that this is an issue because it requires training 2n networks, where n is the number of source tasks.",Structuring,Structuring.Quote,,
+4156,I am unconvinced that one frequently enough has access to a sufficiently large set of candidate source tasks for this to be a real practical issue.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4157,"- The metrics are tightly coupled to the encoder used, and no exploration of encoder architectures is performed.",Request,Request.Experiment,P-Positive,Meaningful Comparison
+4158,"The LSTM architecture used is reasonable, but it would be nice to see how much results change (if at all) with alternative architectures.",Request,Request.Experiment,P-Positive,Meaningful Comparison
+4159,"- The CFS metric depends on a hyperparameter (the ""retention ratio""), which here is arbitrarily set to 80% without any justification.",Request,Request.Explanation,N-Negative,Substance
+4160,"- What is the motivation for the restriction to linear models? In the referenced probing paper, for example, MLPs were also used to explore whether attributes were coded for 'non-linearly'.",Request,Request.Experiment,N-Negative,Soundness/Correctness
+4161,The paper presents a combination of evolutionary search methods (CEM) and deep reinforcement learning methods (TD3).,Structuring,Structuring.Summary,,
+4162,The CEM algorithm is used to learn a Diagional Gaussian distribution over the parametes of the policy.,Structuring,Structuring.Summary,,
+4163,The population is sampled from the distribution.,Structuring,Structuring.Summary,,
+4164,Half of the population is updated by the TD3 gradient before evaluating the samples.,Structuring,Structuring.Summary,,
+4165,"For filling the replay buffer of TD3, all state action samples from all members of the population are used.",Structuring,Structuring.Summary,,
+4166,The algorithm is compared against the plane variants of CEM and TD3 as well as against the evoluationary RL (ERL) algorithm.,Structuring,Structuring.Summary,,
+4167,Results are promising with a negative result on the swimmer_v2 task.,Evaluative,Evaluative,P-Positive,Soundness/Correctness
+4168,The paper is well written and easy to understand.,Evaluative,Evaluative,P-Positive,Clarity
+4169,"While the presented ideas are well motivated and it is certainly a good idea to combine deep RL and evoluationary search, novelty of the approach is limited as the setup is quite similar to the ERL algorithm (which is still on archive and not published, but still...).",Evaluative,Evaluative,N-Negative|P-Positive,Motivation/Impact|Originality
+4170,See below for more comments:,Structuring,Structuring.Heading,,
+4171,"- While there seems to be a consistent improvement over TD3, this improvement is in some cases small (e,g. ants).",Evaluative,Evaluative,N-Negative,Originality
+4172,- We are learning a value function for each of the first half of the population.,Structuring,Structuring.Quote,,
+4173,"However, the value function from the previous individual is used to initialize the learning of the current value function.",Structuring,Structuring.Quote,,
+4174,"Does this cause some issues, e.g., do we need to set the number of steps so high that the initialization does not matter so much any more? Or would it make more sense to reset the value function to some ""mean value function"" after every individual?",Request,Request.Clarification,U-Neutral,Clarity
+4175,- The importance mixing does not seem to provide a better performance and could therefore be shortened in the paper,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4176,"Summary: This paper introduces a new Neural Network training procedure, designed for tabular data, that seeks to leverage feature clusters extracted from GBDTs.",Structuring,Structuring.Summary,,
+4177,Strengths: The idea of leveraging feature groups in a neural network structure; the novelty of the RESE model;,Evaluative,Evaluative,P-Positive,Originality
+4178,"Weaknesses: The main weakness of the paper is that the performance gains are extremely low compared to the next contender; perhaps they are statistically significant (this cannot be determined), but it's unclear why we wouldn't use GBDT.",Evaluative,Evaluative,N-Negative,Substance
+4179,Minor typos:,Structuring,Structuring.Heading,,
+4180,(abstract),Evaluative,Evaluative,N-Negative,Clarity
+4181,"- ""NN has achieved"" => ""Neural Networks have achieved""",Evaluative,Evaluative,N-Negative,Clarity
+4182,"- ""performances"" => performance",Evaluative,Evaluative,N-Negative,Clarity
+4183,"- ""explicitly leverages"" => ""explicitly leverage""",Evaluative,Evaluative,N-Negative,Clarity
+4185,"- (top of p. 2) What exactly is the difference between ""implicit feature combinations"" and ""explicit (?), expressive feature combinations""",Request,Request.Explanation,N-Negative,Clarity
+4186,"- (top of p. 2) ""encourage parameter sharing"" - between what and what? at which level? [reading on, I realized this applies to groups of features; it should maybe be made clear earlier]",Request,Request.Explanation,N-Negative,Clarity
+4187,"- what is the benefit brought by the 'Structural Knowledge' transfer? is this quantified anywhere? based on the description, I don't understand if this is an add-on to TabNN or whether it is incorporated in TabNN.",Request,Request.Explanation,N-Negative,Replicability
+4188,"Recommendations for the authors: Would it be possible to provide an analysis of the cases when TabNN is expected to outperform GBDT by a sizable margin? Or, if not, are there other reasons why using a neural network would make more sense than just simply running GBDT?",Request,Request.Experiment,N-Negative,Substance
+4189,The paper considers the problem of dictionary learning.,Structuring,Structuring.Summary,,
+4190,"Here the model that we are given samples y, where we know that y = Ax where A is a dictionary matrix, and x is a random sparse vector.",Structuring,Structuring.Summary,,
+4191,"The goal is typically to recover the dictionary A, from which one can also recover the x under suitable conditions on A. The paper shows that there is an alternating optimization-based algorithm for this problem that under standard assumptions provably converges exactly to the true dictionary and the true coefficients x (up to some negligible bias).",Structuring,Structuring.Summary,,
+4192,The main comparison with prior work,Structuring,Structuring.Summary,,
+4193,is with [1].,Structuring,Structuring.Summary,,
+4194,"Both give algorithms of this type for the same problem, with similar assumptions (although there is some difference; see below).",Structuring,Structuring.Summary,,
+4195,"In [1], the authors give two algorithms: one with a better sample complexity than the algorithm presented here, but which has some systematic, somewhat large, error floor which it cannot exceed, and another which can obtain similar rates of convergence to the exact solution, but which requires polynomial sample complexity (the explicit bound is not stated in the paper).",Structuring,Structuring.Summary,,
+4196,The algorithm here seems to build off of the former algorithm; essentially replacing a single hard thresholding step with an IHT-like step.,Structuring,Structuring.Summary,,
+4197,This update rule is able to remove the error floor and achieve exact recovery.,Structuring,Structuring.Summary,,
+4198,"However, this makes the analysis substantially more difficult.",Structuring,Structuring.Summary,,
+4199,"I am not an expert in this area, but this seems like a nice and non-trivial result.",Evaluative,Evaluative,P-Positive,Originality
+4200,The proofs are quite dense and I was unable to verify them carefully.,Evaluative,Evaluative,N-Negative,Replicability
+4201,Comments:,Structuring,Structuring.Heading,,
+4202,"- The analysis in [1] handles the case of noisy updates, whereas the analysis given here only works for exact updates.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4203,"The authors claim that some amount of noise can be tolerated, but do not quantify how much.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4204,"- A.4 makes it sound like eps_t needs to be assumed to be bounded, when all that is required is the bound on eps_0.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4205,"[1] Arora, S. Ge, R., Ma, T. and Moitra, A. Simple, Efficient, and Neural Algorithms for Sparse Coding.",Other,Other,,
+4206,COLT 2015.,,,,
+4207,The main contributions of this work are essentially on the theoretical aspects.,Structuring,Structuring.Summary,,
+4208,"It seems that the proposed algorithm is not very original because its two parts, namely prediction (coefficient estimation) and learning (dictionary update) have been widely used in the literature, using respectively a IHT and a gradient descent.",Evaluative,Evaluative,N-Negative,Originality
+4209,The authors need to describe in detail the algorithmic novelty of their work.,Request,Request.Edit,N-Negative,Originality
+4210,The definition of “recovering true factor exactly” need to be given.,Request,Request.Edit,N-Negative,Soundness/Correctness
+4211,"The proposed algorithm involves several tuning parameters, when alternating between two updating rules, an IHT-based update for coefficients and a gradient descent-based update for the dictionary.",Fact,Fact,,
+4212,"Therefore, an appropriate choice of their values need to be given.",Request,Request.Edit,N-Negative,Replicability
+4213,"In the algorithm, the authors need to define the HT function in (3) and (4).",Request,Request.Edit,N-Negative,Clarity
+4214,"In the experiments, the authors compare the proposed method to only the one proposed by Arora et al. 2015.",Structuring,Structuring.Quote,,
+4215,"We think that this is not enough, and more extensive experimental results would provide a better paper.",Evaluative,Evaluative,N-Negative,Substance
+4216,"There are some typos that can be easily found, such as “of the out algorithm”.",Request,Request.Typo,N-Negative,Clarity
+4217,Overall:,Structuring,Structuring.Heading,,
+4218,"This paper introduces the Scratchpad Encoder, a novel addition to the sequence to sequence (seq2seq) framework and explore its effectiveness in generating natural language questions from a given logical form.",Structuring,Structuring.Summary,,
+4219,"The proposed model enables the decoder at each time step to modify all the encoder outputs, thus using the encoder as a “scratchpad” memory to keep track of what has been generated so far and to guide future generation.",Structuring,Structuring.Summary,,
+4220,Quality and Clarity:,Structuring,Structuring.Heading,,
+4221,-- The paper is well-written and easy to read.,Evaluative,Evaluative,P-Positive,Clarity
+4222,-- Consider using a standard fonts for the equations.,Request,Request.Edit,N-Negative,Other
+4223,Originality :,Structuring,Structuring.Heading,,
+4224,The idea of question generation: using logical form to generate meaningful questions for argumenting data of QA tasks is really interesting and useful.,Evaluative,Evaluative,P-Positive,Motivation/Impact
+4225,"Compared to several baselines with a fixed encoder, the proposed model allows the decoder to attentively write “decoding information” to the “encoder” output.",Evaluative,Evaluative,P-Positive,Meaningful Comparison
+4226,The overall idea and motivation looks very similar to the coverage-enhanced models where the decoder also actively “writes” a message (“coverage”) to the encoder's hidden states.,Evaluative,Evaluative,P-Positive,Meaningful Comparison
+4227,"In the original coverage paper (Tu et.al, 2016), they also proposed a “neural network based coverage model” where they used a general neural network output to encode attention history, although this paper works differently where it directly updates the encoder hidden states with an update vector from the decoder.",Fact,Fact,,
+4228,"However, the modification is slightly marginal but seems quite effective.",Evaluative,Evaluative,P-Positive,Substance
+4229,It is better to explain the major difference and the motivation of updating the hidden states.,Evaluative,Evaluative,N-Negative,Substance
+4230,-------------------,,,,
+4232,"-- In Equation (13), is there an activation function between W1 and W2?",Request,Request.Explanation,U-Neutral,Substance
+4233,"-- Based on Table 1, why did not evaluate the proposed model with beam-search?",Request,Request.Experiment,U-Neutral,Substance
+4234,Summary,Structuring,Structuring.Heading,,
+4235,"The paper proposes to modify the ""Dual Learning"" approach to supervised (and unsupervised) translation problems by making use of additional pretrained mappings for both directions (i.e. primal and dual).",Structuring,Structuring.Summary,,
+4236,"These pre-trained mappings (""agents"") generate targets from the primal to the dual domain, which need to be mapped back to the original input.",Structuring,Structuring.Summary,,
+4237,It is shown that having >=1 additional agents improves training of the BLEU score in standard MT and unsupervised MT tasks.,Structuring,Structuring.Summary,,
+4238,"The method is also applied to unsupervised image-to-image ""translation"" tasks.",Structuring,Structuring.Summary,,
+4239,Positives and Negatives,Structuring,Structuring.Heading,,
+4240,+1 Simple and straightforward method with pretty good results on language translation.,Evaluative,Evaluative,P-Positive,Soundness/Correctness
+4241,"+2 Does not require additional computation during inference, unlike ensembling.",Structuring,Structuring.Summary,,
+4242,-1 The mathematics in section 3.1 is unclear and potentially flawed (more below).,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4243,"-2 Diversity of additional ""agents"" not analyzed (more below).",Evaluative,Evaluative,N-Negative,Substance
+4244,"-3 For image-to-image translation experiments, no quantitative analysis whatsoever is offered so the reader can't really conclude anything about the effect of the proposed method in this domain.",Evaluative,Evaluative,N-Negative,Substance
+4245,"-4 Talking about ""agents"" and ""Multi-Agent"" is a somewhat confusing given the slightly different use of the same term in the reinforcement literature. Why not just ""mapping"" or ""network""?",Request,Request.Explanation,N-Negative,Soundness/Correctness
+4246,-1: Potential Issues with the Maths.,Structuring,Structuring.Heading,,
+4247,"The maths is not clear, in particular the gradient derivation in equation (8).",Evaluative,Evaluative,N-Negative,Clarity
+4248,Let's just consider the distortion objective on x (of course it also applies to y without loss of generality).,Other,Other,,
+4249,"At the very least we need another ""partial"" sign in front of the ""\delta"" function in the numerator.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4250,"But again, it's not super clear how the paper estimates this derivative.",Evaluative,Evaluative,N-Negative,Clarity
+4251,"Intuitively the objective wants f_0 to generate samples which, when mapped back to the X domain, have high log-probability under G, but its samples cannot be differentiated in the case of discrete data.",Fact,Fact,,
+4252,So is the REINFORCE estimator used or something? Not that the importance sampling matter is orthogonal.,Request,Request.Explanation,N-Negative,Soundness/Correctness
+4253,"In the case of continuous data x, is the reparameterization trick used?",Request,Request.Clarification,U-Neutral,Soundness/Correctness
+4254,This should at the very least be explained more clearly.,Evaluative,Evaluative,N-Negative,Clarity
+4255,Note that the importance sampling does not affect this issue.,Fact,Fact,,
+4256,-2: Diversity of Agents.,Structuring,Structuring.Heading,,
+4257,"As with ensembles, clearly it only helps to have multiple agents (N>2) if the additional agents are distinct from f_1 (again without loss of generality this applies to g as well).",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4258,The paper proposes to use different random seeds and iterate over the dataset in a different order for distinct pretrained f_i.,Structuring,Structuring.Quote,,
+4259,"The paper should quantify that this leads to diverse ""agents"".",Request,Request.Edit,N-Negative,Soundness/Correctness
+4260,"I suppose the proof is in the pudding; as we have argued, multiple agents can only improve performance if they are distinct, and Figure 1 shows some improvement as the number of agents are increase (no error bars though).",Fact,Fact,,
+4261,The biggest jump seems to come from N=1 -> N=2 (although N=4 -> N=5 does see a jump as well).,Structuring,Structuring.Quote,,
+4262,"Presumably if you get a more diverse pool of agents, that should improve things.",Fact,Fact,,
+4263,"Have you considered training different agents on different subsets of the data, or trying different learning algorithms/architectures to learn them?",Request,Request.Explanation,U-Neutral,Substance
+4264,More experiments on the diversity would help make the paper more convincing.,Request,Request.Experiment,U-Neutral,Substance
+4265,This paper proposes an approach for automatic robot design based on Neural graph evolution.,Structuring,Structuring.Summary,,
+4266,"The overall approach has a flavor of genetical algorithms, as it also performs evolutionary operations on the graph, but it also allows for a better mechanism for policy sharing across the different topologies, which is nice.",Structuring,Structuring.Summary,,
+4267,"My main concern about the paper is that, currently, the experiments do not include any strong baseline (the ES currently is not a strong baseline, see comments below).",Evaluative,Evaluative,N-Negative,Substance
+4268,"The experiments currently demonstrate that optimizing both controller and hardware is better than optimizing just the controller, which is not surprising and is a phenomenon which has been previously studied in the literature.",Evaluative,Evaluative,N-Negative,Originality
+4269,What instead is missing is an answer to the question: Is it worth using a neural graph? what are the advantages and disadvantages compared to previous approaches?,Evaluative,Evaluative,N-Negative,Substance
+4270,I would like to see additional experiments to answer this questions.,Request,Request.Experiment,U-Neutral,Substance
+4271,"In particular, I believe that any algorithms you compare against, you should optimize both G and theta, since optimizing purely the hardware is unfair.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4272,"You should use an existing ES implementation (e.g., from some well-known package) instead of a naive implementation, and as additional baseline also CMA-ES.",Request,Request.Edit,N-Negative,Soundness/Correctness
+4273,If you can also compare against one or two algorithms of your choice from the recent literature it would also give more value to the comparison.,Request,Request.Experiment,U-Neutral,Meaningful Comparison
+4274,Detailed comments:,Structuring,Structuring.Heading,,
+4275,"- in the abstract you say that ""NGE is the first algorithm that can automatically discover complex robotic graph structures"".",Structuring,Structuring.Quote,,
+4276,This statement is ambiguous and potentially unsupported by evidence. how do you define complex? that can or that did discover?,Request,Request.Explanation,N-Negative,Soundness/Correctness
+4277,- in the introduction you mention that automatic robot design had limited success.,Structuring,Structuring.Quote,,
+4278,"This is rather subject, and I would tend to disagree.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4279,"Moreover, the same limitations that apply to other algorithms to make them successful, in my opinion, apply to your proposed algorithm (e.g., difficulty to move from simulated to real-world).",Fact,Fact,,
+4280,- The digression at the bottom of the first page about neural architecture search seem out of context and interrupts the flow of the introduction.,Evaluative,Evaluative,N-Negative,Clarity
+4281,"What is the point that you are trying to make? Also, note that some of the algorithms that you are citing there have indeed applied beyond architecture search, eg. Bayesian optimization is used for gait optimization in robotics, and Genetic algorithms have been used for automatic robot design.",Request,Request.Explanation,N-Negative,Soundness/Correctness
+4282,- The stated contributions number 3 and 5 are not truly contributions.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4283,#3 is so generic that a large part of the previous literature on the topic fall under this category -- not new.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4284,"#5 is weak, and tell us more about the limitations of random search and naive ES than necessarily a merit of your approach.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4285,"- Sec 2.2: ""(GNNs) are very effective"" effective at what? what is the metric that you consider?",Request,Request.Explanation,N-Negative,Soundness/Correctness
+4286,"- Sec 3 ""(PS), where weights are reused"" can you already go into more details or refer to later sections?",Request,Request.Explanation,N-Negative,Soundness/Correctness
+4287,"- First line page 4 you mention AF, without introducing the acronym ever before.",Evaluative,Evaluative,N-Negative,Clarity
+4288,- Sec 3.1: the statements about MB and MF algorithms are inaccurate.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4289,Model-based RL algorithms can work in real-time (e.g. http://proceedings.mlr.press/v78/drews17a/drews17a.pdf) and have been shown to have same asymptotic performance of MB controllers for simple robot control (e.g. https://arxiv.org/abs/1805.12114),Fact,Fact,,
+4290,"- ""to speed up and trade off between evaluating fitness and evolving new species"" Unclear sentence. speed up what",Request,Request.Clarification,N-Negative,Clarity
+4291,? why is this a trade-off?,,,,
+4292,- Sec 3.4 can you recap all the parameters after eq.11? going through Sec 3.2 and 2.2 to find them is quite annoying.,Request,Request.Clarification,N-Negative,Clarity
+4293,- Sec 4.1:,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4294,would argue that computational cost is rarely a concern among evolutionary algorithms.,,,,
+4295,"The cost of evaluating the function is typically more pressing, and as a result it is important to have algorithms that can converge within a small number of iterations/generations.",Fact,Fact,,
+4296,"- Providing the same computational budget seem rather arbitrary at the moment, and it heavily depends from implementation. How many evaluations do you perform for each method? why not having the same budget of experiments?",Request,Request.Explanation,N-Negative,Soundness/Correctness
+4305,"This paper introduces policy gradient methods for RL where the policy must choose a direction (a.k.a., the navigation problem).",Structuring,Structuring.Summary,,
+4306,"Mapping techniques from ""non-directional"" problems (where the action space is not a direction) and then projeting on the sphere is sub-optimal (the variance is too big).",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4307,"The authors propose to sample directly on the sphere, using the fact that the likelyhood of an angular Gaussian r.v. has *almost* a closed form and its gradient can almost be computed, up to some normalization term (the integral which is constant in the standard Gaussian case).",Fact,Fact,,
+4308,This can be seen as a variance reduction techniques.,Fact,Fact,,
+4309,"The proofs are not too intricate, for someone used to variance reduction (yet computations must be made quite carefully).",Evaluative,Evaluative,P-Positive,Clarity
+4310,"The result is coherent, interesting from a theoretical point of view and the experiment are somehow convincing.",Evaluative,Evaluative,P-Positive,Substance
+4311,The main drawback would be the rather incrementality of that paper (basically sample before projecting is a bit better than projecting after sampling) and that this directional setting is quite limited...,Evaluative,Evaluative,N-Negative,Replicability
+4313,This paper derives a new policy gradient method for when continuous actions are transformed by a,Structuring,Structuring.Summary,,
+4314,"normalization step, a process called angular policy gradients (APG).",,,,
+4315,A generalization based on,Structuring,Structuring.Summary,,
+4316,a certain class of transformations is presented.,,,,
+4317,The method is an instance of a,Structuring,Structuring.Summary,,
+4318,Rao-Blackwellization process and hence reduces variance.,,,,
+4319,Detailed comments,Structuring,Structuring.Heading,,
+4320,"I enjoyed the concept and, while relatively niche, appreciated the work done here and do believe it has clear applications.",Evaluative,Evaluative,P-Positive,Motivation/Impact
+4321,I am not convinced that the measure theoretic perspective is always,Evaluative,Evaluative,N-Negative|P-Positive,Replicability|Soundness/Correctness
+4322,"necessary to convey the insights, although I appreciate the desire for technical correctness. Still,",,,,
+4323,"appealing to measure theory does reduces readership, and I encourage the authors to keep this in",,,,
+4324,mind as they revise the text.,,,,
+4325,Generally speaking it seems like a lot of technicalities for a relatively simple result:,Evaluative,Evaluative,N-Negative,Clarity
+4326,marginalizing a distribution onto a lower-dimensional surface.,,,,
+4327,"The paper positions itself generally as dealing with arbitrary transformations T, but really is",Evaluative,Evaluative,N-Negative,Substance
+4328,about angular transformations (e.g. Definition 3.1).,,,,
+4329,The generalization is relatively,Fact,Fact,,
+4330,straightforward and was not too surprising given the APG theory.,,,,
+4331,The paper would gain in clarity,Evaluative,Evaluative,N-Negative,Clarity
+4332,if its scope was narrowed.,,,,
+4333,"It's hard for me to judge of the experimental results of section 5.3, given that there are no other",Evaluative,Evaluative,N-Negative,Substance
+4334,"benchmarks or provided reference paper. As a whole, I see APG as providing a minor benefit over PG.",,,,
+4335,"Def 4.4: ""a notion of Fisher information"" -- maybe ""variant"" is better than ""notion"", which implies there are different kinds of Fisher information",Request,Request.Edit,N-Negative,Clarity
+4336,Def 3.1 mu is overloaded: parameter or measure?,Request,Request.Clarification,N-Negative,Clarity
+4337,"4.4, law of total variation -- define",Request,Request.Explanation,N-Negative,Substance
+4338,Overall,Structuring,Structuring.Heading,,
+4339,"This was a fun, albeit incremental paper.",Evaluative,Evaluative,N-Negative|P-Positive,Other|Meaningful Comparison
+4340,"The method is unlikely to set new SOTA, but I appreciated",Evaluative,Evaluative,N-Negative|P-Positive,Substance|Originality
+4341,the appeal to measure theory to formalize some of the concepts.,,,,
+4342,Questions,Structuring,Structuring.Heading,,
+4343,What does E_{pi|s} refer to in Eqn 4.1?,Request,Request.Explanation,U-Neutral,Clarity
+4344,Can you clarify what it means for the map T to be a sufficient statistic for theta? (Theorem 4.6),Request,Request.Clarification,U-Neutral,Substance
+4345,Experiment 5.1: Why would we expect APG with a 2d Gaussian to perform better than a 1d Gaussian,Request,Request.Experiment,U-Neutral,Substance
+4346,on the angle?,,,,
+4347,Suggestions,Structuring,Structuring.Heading,,
+4348,Paragraph 2 of section 3 seems like the key to the whole paper -- I would make it more prominent.,Request,Request.Experiment,U-Neutral,Other
+4349,I would include a short 'measure theory' appendix or equivalent reference for the lay reader.,Request,Request.Explanation,U-Neutral,Clarity
+4350,I wonder if the paper's main aim is not actually to bring measure theory to the study of policy,Fact,Fact,,
+4351,"gradients, which would be a laudable goal in and of itself.",,,,
+4352,ICLR may not in this case be the right,,,,
+4353,venue (nor are the current results substantial enough to justify this) but I do encourage authors,,,,
+4354,to,,,,
+4355,"consider this avenue, e.g. in a journal paper.",,,,
+4356,= Revised after rebuttal =,Structuring,Structuring.Heading,,
+4357,I thank the authors for their response.,Social,Social,,
+4358,"I think this work deserves to be published, in particular because it presents a reasonably straightforward result that others will benefit from.",Evaluative,Evaluative,P-Positive,Motivation/Impact
+4359,"However, I do encourage further work to",Structuring,Structuring.Heading,,
+4360,1) Provide stronger empirical results (these are not too convincing).,Evaluative,Evaluative,N-Negative,Substance
+4361,"2) Beware of overstating: the argument that the framework is broadly applicable is not that useful, given that it's a lot of work to derive closed-form marginalized estimators.",Evaluative,Evaluative,N-Negative,Replicability
+4362,The paper deals with the problem of recovering an exact solution for both the dictionary and the activation coefficients.,Structuring,Structuring.Summary,,
+4363,"As other works, the solution is based on a proper initialization of the dictionary.",Structuring,Structuring.Summary,,
+4364,The authors suggest using Aurora 2015 as a possible initialization.,Structuring,Structuring.Summary,,
+4365,The contribution improves Arora 2015 in that it converges linearly and recovers both the dictionary and the coefficients with no bias.,Structuring,Structuring.Summary,,
+4366,"The main contribution is the use of a IHT-based strategy to update the coefficients, with a gradient-based update for the dictionary (NOODL algorithm).",Structuring,Structuring.Summary,,
+4367,"The authors show that, combined with a proper initialization, this has exact recovery guaranties.",Structuring,Structuring.Summary,,
+4368,"Interestingly, their experiments show that NOODL converges linearly in number of iterations, while Arora gets stuck after some iterations.",Structuring,Structuring.Summary,,
+4369,I think the paper is relevant and proposes an interesting contribution.,Evaluative,Evaluative,P-Positive,Motivation/Impact
+4370,The paper is well written and the key elements are in the body.,Evaluative,Evaluative,P-Positive,Clarity
+4371,"However, there is a lot of important material in the Appendix, which I think may be relevant to the readers.",Fact,Fact,,
+4372,It would be nice to have some more intuitive explanations at least of Theorem 1.,Request,Request.Edit,U-Neutral,Substance
+4373,"Also, it is clear in the experiments the superiority with respect to Arora in terms of iterations (and error), but what about computational time?",Request,Request.Clarification,U-Neutral,Meaningful Comparison
+4374,"This paper present extensions of the Self-Attention Generative Adversarial Network approach SAGAN, leading to impressive images generations conditioned on imagenet classes.",Structuring,Structuring.Summary,,
+4375,The key components of the approach are :,Structuring,Structuring.Heading,,
+4376,- increasing the batch size by a factor 8,Structuring,Structuring.Summary,,
+4377,- augmenting the width of the networks by 50%,Structuring,Structuring.Summary,,
+4378,These first two elements result in an Inception score (IS) boost from 52 to 93.,Structuring,Structuring.Summary,,
+4379,"- the use of shared embeddings for the class conditioned batch norm layers, orthonormal regularization and hierarchical latent space bring an additional boost of IS 99.",Structuring,Structuring.Summary,,
+4380,"The core novel element of the paper is the truncation trick: At train time, the input z is sampled from a normal distribution but at test time, a truncated normal distribution is used: when the magnitude of elements of z are above a certain threshold, they are re-sampled.",Structuring,Structuring.Summary,,
+4381,"Variations of this threshold lead to variations in FD and IS, as shown in insightful experiments.",Structuring,Structuring.Summary,,
+4382,The comments that more data helps (internal dataset experiments) is also informative.,Structuring,Structuring.Summary,,
+4383,Very nice to have included negative results and detailed parameter sweeps.,Structuring,Structuring.Summary,,
+4384,"This is a very nice work with impressive results, a great progress achievement in the field of image generation.",Evaluative,Evaluative,P-Positive,Motivation/Impact
+4385,Very well written.,Evaluative,Evaluative,P-Positive,Clarity
+4386,Suggestions/questions:,Structuring,Structuring.Heading,,
+4387,- it would be nice to also propose unconditioned experiments.,Request,Request.Experiment,P-Positive,Substance
+4388,It would be good to give an idea in the text of TPU-GPU equivalence in terms of feasibility of a standard GPU implementation - computation time it would involve.,Request,Request.Edit,P-Positive,Replicability
+4389,- I understand that no data augmentation was used during training?,Request,Request.Clarification,U-Neutral,Clarity
+4390,"- clarification of the truncation trick: if the elements of z are re-sampled and are still above the threshold, are they re-sampled again and again until they are all below the given threshold?",Request,Request.Explanation,U-Neutral,Clarity
+4391,- A sentence could be added to explain the truncation trick in the abstract directly since it is simple to understand and is key to the quality of the results.,Request,Request.Edit,U-Neutral,Soundness/Correctness
+4392,- A reference to Appendix C could be given at the beginning of the Experiments section to help the reader find these details more easily.,Request,Request.Edit,U-Neutral,Clarity
+4393,- It would be nice to display more Nearest neighbors for the dog image.,Request,Request.Edit,U-Neutral,Clarity
+4394,- It would be nice to add a figure of random generations.,Request,Request.Experiment,U-Neutral,Substance
+4395,- make the bib uniform: remove unnecessary doi - url - cvpr page numbers,Request,Request.Edit,U-Neutral,Clarity
+4396,The paper considers 'replica exchange' Langevin dynamics.,Structuring,Structuring.Summary,,
+4397,"These methods are very popular among practitioners, and developing some theory backing the empirical successes is an important goal.",Structuring,Structuring.Summary,,
+4398,Unfortunately this paper offers only weak results.,Evaluative,Evaluative,N-Negative,Substance
+4399,- The first 6 pages set up the general formalism. This is textbook material adapted to the current problem.,Evaluative,Evaluative,N-Negative,Originality
+4400,"- Page 7 offers a result (expression for the Dirichlet form), which is hardly more than an exercise for anybody familiar with Markov Chains theory.",Evaluative,Evaluative,N-Negative,Originality
+4401,- Page 8 gives a Poincare inequality.,Fact,Fact,,
+4402,"Again, this follows from known results.",Evaluative,Evaluative,N-Negative,Originality
+4403,More importantly: (1) It does not show any advantage of replica exchange over standard dynamics; (2) It does not provide any quantitative insight for high-dimensional problems.,Evaluative,Evaluative,N-Negative,Substance
+4404,- Similar comments hold for the following pages.,Other,Other,,
+4405,"They are an exercise in applying standard formalism to this problem, without really showing any significative advantage of replica exchange.",Evaluative,Evaluative,N-Negative,Substance
+4406,"Gradient-free evolutionary search methods for Reinforcement Learning are typically very stable, but scale poorly with the number of parameters when optimizing highly-parametrized policies (e.g. neural networks).",Fact,Fact,,
+4407,"Meanwhile, gradient-based deep RL methods, such as DDPG are often sample efficient, particularly in the off-policy setting when, unlike evolutionary search methods, they can continue to use previous experience to estimate values.",Fact,Fact,,
+4408,"However, these approaches can also be unstable.",Fact,Fact,,
+4409,This work combines the well-known CEM search with TD3 (an improved variant of DDPG).,Structuring,Structuring.Summary,,
+4410,"The key idea of of this work is in each generation of CEM, 1/2 the individuals are improved using TD3 (i.e. the RL gradient).",Structuring,Structuring.Summary,,
+4411,This method is made more practical by using a replay buffer so experience from previous generations is used for the TD3 updates and importance sampling is used to improve the efficiency of CEM.,Structuring,Structuring.Summary,,
+4412,"This work shows, on some simple control tasks, that this method appears to result in much stronger performance compared with CEM, and small improvements over TD3 alone.",Structuring,Structuring.Summary,,
+4413,It also typically out-performs ERL.,Structuring,Structuring.Summary,,
+4414,"Intuitively, it seems like it may be possible to construct counter-examples where the gradient updates will prevent convergence.",Fact,Fact,,
+4415,Issues of convergence seem like they deserve some discussion here and potentially could be examined empirically (is CEM-TD3 converging in the swimmer?).,Evaluative,Evaluative,N-Negative,Substance
+4416,"The justification that the method of Khadka & Tumer (2018) cannot be extended to use CEM, since the RL policies do not comply with the covariance matrix is unclear to me.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4417,"Algorithm 1, step 20, the covariance matrix is updated after the RL step so regardless of how the RL policies are generated, the search distribution on the next distribution includes them.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4418,"In both this work, and Khadka & Tumer, the RL updates lead to policies that differ from the search distribution (indeed that is the point), and there is no guarantee in this work that the TD3 updates result in policies close to the starting point.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4419,"It sees like the more important distinction is that, in this approach, the information flows both from ES to RL and vice-versa, rather than just from RL to ES.",Fact,Fact,,
+4420,"One view of this method would be that it is an ensemble method for learning the policy [e.g. similar to Osband et al., 2016 for DQN].",Fact,Fact,,
+4421,"This could be discussed and a relevant control would be to keep a population (ensemble) of policies, but only update using RL while sharing experience across all actors.",Request,Request.Experiment,U-Neutral,Soundness/Correctness
+4422,This would isolate the ensemble effect from the evolutionary search.,Fact,Fact,,
+4423,Minor issues:,Structuring,Structuring.Heading,,
+4424,- The ReLU non-linearity in DDPG and TD3 prior work is replaced with tanh.,Structuring,Structuring.Quote,,
+4425,"This change is noted, but it would be useful to make a least a brief (i.e. one sentence) comment on the motivation for this change.",Request,Request.Edit,U-Neutral,Soundness/Correctness
+4426,- The paper is over the hard page limit for ICLR so needs to be edit to reduce the length.,Request,Request.Edit,N-Negative,Other
+4427,"Osband I, Blundell C, Pritzel A, Van Roy B. Deep exploration via bootstrapped DQN. InAdvances in neural information processing systems 2016 (pp. 4026-4034).",Fact,Fact,,
+4428,PROS:,Structuring,Structuring.Heading,,
+4429,"- The text is very well written, with a good balance between mathematical details and intuitions.",Evaluative,Evaluative,P-Positive,Clarity
+4430,- I really like the high-level description of the algorithms and proof techniques,Evaluative,Evaluative,P-Positive,Substance
+4431,CONS:,Structuring,Structuring.Heading,,
+4432,"to be completely honest, I am not sure I have learnt anything new from the paper.",Evaluative,Evaluative,N-Negative,Originality
+4433,1) the proof techniques are very standard,Evaluative,Evaluative,N-Negative,Originality
+4434,"2) although there must be some small innovations, I thought that all the results had more or less been proven by Dupuis and co-authors:",Evaluative,Evaluative,N-Negative,Originality
+4435,a. large deviation principles,,,,
+4436,"b. the larger the swapping rate, the better (which motivated Dupuis & al to consider the infinite swapping limit.)",,,,
+4437,and,,,,
+4438,c. Bakri & al methodology to prove convergence relying on the carre du champ is by now very standard and the proofs of the paper are only minor adaptations.,,,,
+4439,"I must probably be missing something, and I encourage the authors to clarify what the main novelties are when compared to the several papers by Dupuis & al.",Request,Request.Clarification,U-Neutral,Originality
+4440,REMARKS:,Structuring,Structuring.Heading,,
+4441,1) I do not really understand the emphasis on optimisation while all the proofs are related to the convergence to the stationary distributions.,Evaluative,Evaluative,N-Negative,Substance
+4544,"This paper discusses the optimization of robot structures, combined with their controllers.",Structuring,Structuring.Summary,,
+4545,The authors propose a scheme,Structuring,Structuring.Summary,,
+4546,"based on a graph representation of the robot structure, and a graph-neural-network as controllers.",,,,
+4547,The experiments show,Structuring,Structuring.Summary,,
+4548,that the proposed scheme is able to produce walking and swimming robots in simulation.,,,,
+4549,"The results in this paper are impressive, and the paper seems free of technical errors.",Structuring,Structuring.Summary,,
+4550,The main criticism I have is that I found the paper harder to read.,Evaluative,Evaluative,N-Negative,Clarity
+4551,"In particular, the exact difference between the proposed method and the ES baseline is not as clear as it could be.",Evaluative,Evaluative,N-Negative,Clarity
+4552,This makes the contribution of this paper in terms of the method,Request,Request.Edit,N-Negative,Clarity
+4553,hard to judge. Please include further description of the ES cost function and algorithm in the main body of the paper.,,,,
+4554,The second point is that the proposed approach seems to modify a few things from the ES baseline.,Fact,Fact,,
+4555,The efficacy of the separate modifications should be tested.,Request,Request.Experiment,U-Neutral,Substance
+4556,"Therefore I would like to see experiments with the ES cost function, but with",Request,Request.Experiment,U-Neutral,Substance
+4557,"inclusion of the pruning step, and experiments with the AF-function but without the pruning step.",,,,
+4559,"This paper proposes a suite of tricks for training large-scale GANs, and obtaining state-of-the-art results for high-resolution images.",Structuring,Structuring.Summary,,
+4560,"The paper starts from a self-attention GAN baseline (Zhang 2018), and proposes:",Structuring,Structuring.Summary,,
+4561,-	Increasing batch size (8x) and model size (2x),Other,Other,,
+4562,"-	Splitting noise z in multiple chunks, and injecting it in multiple layers of the generator",Structuring,Structuring.Summary,,
+4564,"Sampling from truncated normal distribution, where samples with norms that exceed a specific threshold are resampled.",,,,
+4565,This seems to be used only at test-time and is used to control variety-fidelity tradeoff.,Structuring,Structuring.Summary,,
+4566,The generator is encouraged to be smooth using an orthogonal regularization term.,Structuring,Structuring.Summary,,
+4567,"In addition, the paper proposes practical recipes for characterizing collapse in GANs.",Structuring,Structuring.Summary,,
+4568,"In the generator, the exploding of the top 3 singular values of each weight matrix seem to indicate collapse.",Structuring,Structuring.Summary,,
+4569,"In the discriminator, the sudden increase of the ratio of first/second singular value of weight matrices indicate collapse in GANs.",Structuring,Structuring.Summary,,
+4570,"Interestingly, the paper suggests that various regularization methods which can improve stability in GAN training, do not necessarily correspond to improvement in performance.",Structuring,Structuring.Summary,,
+4571,Strengths:,Structuring,Structuring.Heading,,
+4572,-	Proposed techniques are intuitive and very well motivated,Evaluative,Evaluative,P-Positive,Motivation/Impact
+4573,"-	One of the big pluses of this work is that authors try to ""quantify"" each proposed technique with training speed and/or performance improvement. This is really a good practice.",Evaluative,Evaluative,P-Positive,Substance
+4574,-	Detailed analysis for detecting collapse and improving stability in large-scale GAN,Evaluative,Evaluative,P-Positive,Substance
+4575,"-	Probably no need to mention that, but results are quite impressive",Evaluative,Evaluative,P-Positive,Soundness/Correctness
+4576,Weaknesses:,Structuring,Structuring.Heading,,
+4577,-	Computational budget required is massive.,Evaluative,Evaluative,N-Negative,Replicability
+4578,"The paper mentions model use from 128-256 TPUs, which severely limits reproducibility of results.",Evaluative,Evaluative,N-Negative,Replicability
+4579,Comments/Questions:,Structuring,Structuring.Heading,,
+4580,-	Can you elaborate more on why BatchNorm statistics are computed across all devices as opposed to per-device? Was this crucial for best performance?,Request,Request.Explanation,U-Neutral,Soundness/Correctness
+4581,-	It is not clear if provided analysis for large-scale GANs apply for small-medium sized GANs.,Request,Request.Clarification,U-Neutral,Clarity
+4582,Providing such analysis would be also helpful for the community.,Request,Request.Experiment,U-Neutral,Clarity
+4583,"-	How do you see the impact of the suggested techniques on tackling harder data-modalities for GANs, e.g. text or sequential data in general?",Request,Request.Explanation,U-Neutral,Soundness/Correctness
+4584,Overall recommendation:,Structuring,Structuring.Heading,,
+4585,"The paper is well written, ideas are well motivated/justified and results are very compelling.",Evaluative,Evaluative,P-Positive,Motivation/Impact
+4586,This is a good paper and I higly recommend acceptance.,Evaluative,Evaluative,P-Positive,Other
+4609,* Summary,Structuring,Structuring.Heading,,
+4610,This paper addresses machine reading tasks involving tracking the states of entities over text.,Structuring,Structuring.Summary,,
+4611,"To this end, it proposes constructing a knowledge graph using recurrent updates over the sentences of the text, and using the graph representation to condition a reading comprehension module.",Structuring,Structuring.Summary,,
+4612,The paper reports positive evaluations on three different tasks.,Structuring,Structuring.Summary,,
+4613,* Review,Structuring,Structuring.Heading,,
+4614,This is an interesting paper.,Evaluative,Evaluative,P-Positive,Motivation/Impact
+4615,The key technical component in the proposed approach is the idea that keeping track of entity states requires (soft) coreference between newly read entities and locations and the ones existing in the knowledge graph constructed so far.,Structuring,Structuring.Summary,,
+4616,"The proposed method seems plausible, but some details are impressionistic and it is not clear why and whether the modeling choices do what the paper says.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+4617,This is especially the case in a few places involving coreference:,Fact,Fact,,
+4618,1. The paper says at the top of page 6 that the result of Eq 1 is a disambiguated intermediate node representation.,Structuring,Structuring.Quote,,
+4619,2. The self attention in Eq 2 performs coreference disamguation which prevents different instances of the same location from being predicted for multiple entities.,Structuring,Structuring.Quote,,
+4620,"While these may indeed be working as advertised, it would be good to see some evaluation that verifies that after learning, what is actually happening is coreference.",Request,Request.Experiment,N-Negative,Substance
+4621,Why does the graph update require coreference pooling again?,Request,Request.Explanation,U-Neutral,Soundness/Correctness
+4622,"Don't the updates in Eq 1 and 2 take care of this? The ablation does not test this, right?",Request,Request.Explanation,N-Negative,Soundness/Correctness
+4623,"Another modeling choice that is not clear is regarding how the model processes the text -- reading prefixes of the paragraph, rather than one sentence at a time. What happens if the model is changed to be read one sentence at a time?",Request,Request.Explanation,N-Negative,Soundness/Correctness
+4624,That the model implicitly learns constraints from data is interesting!,Evaluative,Evaluative,P-Positive,Soundness/Correctness
+4625,"Bottomline: The paper presents interesting ideas and good results, but would be better if the modeling choices were better explored/motivated.",Structuring,Structuring.Summary,,
+4626,The paper addresses a challenging problem of predicting the states of entities over the description of a process.,Evaluative,Evaluative,P-Positive,Motivation/Impact
+4627,"The paper is very well written, and easily understandable.",Evaluative,Evaluative,P-Positive,Clarity
+4628,"The authors propose a graph structure for entity states, which is updated at each step using the outputs of a machine comprehension system.",Structuring,Structuring.Summary,,
+4629,The approach is novel and well motivated.,Evaluative,Evaluative,P-Positive,Originality
+4630,I will suggest a few improvements:,Structuring,Structuring.Heading,,
+4631,"1. the NPN model seems a good alternative, will be good to have a discussion about why your model is better than NPN.",Request,Request.Experiment,U-Neutral,Meaningful Comparison
+4632,"Also, NPN can probably be modified to output spans of a sentence.",Fact,Fact,,
+4633,I will be curious to know how it performs.,Request,Request.Explanation,U-Neutral,Meaningful Comparison
+4634,2. A more detailed illustration of the system / network is needed. Would have made it much easier to understand the paper.,Request,Request.Edit,U-Neutral,Substance
+4635,3. What are the results when using the whole training set of Recipes ?,Request,Request.Explanation,U-Neutral,Soundness/Correctness

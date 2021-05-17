@@ -1,0 +1,916 @@
+id,sentence,coarse,fine,pol,asp
+2843,"This paper proposed Compound Density Networks (CDNs), a neural network architecture that parametrises conditional distributions as infinite mixtures, thus generalising the traditional finite mixture density networks (MDNs).",Structuring,Structuring.Summary,,
+2844,"The authors realise CDNs by treating the weights of each neural network layer probabilistically, and letting them be matrix variate Gaussians (MVGs) with their parameters given as a function of the layer input via a hypernetwork.",Structuring,Structuring.Summary,,
+2845,CDNs can then be straightforwardly optimised with SGD for a particular task by using the reparametrization trick.,Structuring,Structuring.Summary,,
+2846,"The authors further argue that in case that overfitting is present at CDNs, then an extra KL-divergence term can be employed such that the input dependent MVG distribution is close to a simple prior that is input agnostic.",Structuring,Structuring.Summary,,
+2847,"They then proceed to evaluate the predictive uncertainty that CDNs offer on three tasks: a toy regression problem, out-of-distribution example detection on MNIST/notMNIST and adversarial example detection on MNIST and CIFAR 10.",Structuring,Structuring.Summary,,
+2848,The objective of this work is to provide a method for better uncertainty estimates from deep learning models.,Structuring,Structuring.Summary,,
+2849,This is an important research area and relevant for ICLR.,Evaluative,Evaluative,P-Positive,Motivation/Impact
+2850,The paper is generally well written with a clear presentation of the proposed model.,Evaluative,Evaluative,P-Positive,Clarity
+2851,"The generalisation from the finite MDN to the continuous CDN seems straightforward, the model is relatively easy to implement and it is evaluated extensively against several modern baselines.",Evaluative,Evaluative,P-Positive,Substance
+2852,"Nevertheless, I believe that it still has to address some points in order to be better suited for publication:",Evaluative,Evaluative,N-Negative,Other
+2853,"- It seems that the model is not very scalable; while the authors do provide a way of reducing the necessary parameters that the hypernetwork has to predict, minibatching can still be an issue as it is implied that you draw a separate random weight matrix for each datapoint due to the input specific distribution (as shown at Algorithm 1).",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+2854,Is this how you implemented minibatching in practice? How easily is this applied to convolutional architectures?,Request,Request.Explanation,N-Negative,Soundness/Correctness
+2855,- How many samples did you use from p(theta|x) during training?,Request,Request.Explanation,N-Negative,Soundness/Correctness
+2856,"It seems that with a single sample the method becomes an instance of VIB [1], only considering the weights of the network as latent variables rather than the hidden units.",Evaluative,Evaluative,U-Neutral,Soundness/Correctness
+2857,- The experiments were entirely focused on uncertainty quality but we are always interested in both performance on the task at hand as as well as good uncertainty estimates. What was the performance based on e.g. classification accuracy on each of these tasks compared to the baselines? I believe that including these results will strengthen the paper and provide a more complete picture.,Request,Request.Experiment,N-Negative,Substance
+2858,- Have you checked / visualised what type of weight distributions do CDNs capture? It would be interesting to see if e.g. the marginal (across the dataset) weight distribution at each layer has any multimodality as that could hint that the network learns to properly specialise to individual data points.,Request,Request.Experiment,U-Neutral,Substance
+2859,"- The authors mention that in order to avoid overfitting they add an extra (weighted) KL-divergence term to the log-likelihood of the dataset, that encourages the weight distributions for specific points to be close to simple priors.",Fact,Fact,,
+2860,How influential is that extra term to the uncertainty quality that you obtain in the end?,Request,Request.Explanation,U-Neutral,Soundness/Correctness
+2861,How does this term affect the learned distributions in case of CDNs?,Request,Request.Explanation,U-Neutral,Soundness/Correctness
+2862,"Furthermore, the way that CDNs are constructed seems to be more appropriate at capturing input specific uncertainty (i.e. aleatoric) rather than global uncertainty about the data (i.e. epistemic).",Fact,Fact,,
+2863,I believe that for the specific uncertainty evaluation tasks this paper considers the latter is more appropriate.,Fact,Fact,,
+2864,More discussion on both of these aspects can help in improving this paper.,Request,Request.Experiment,N-Negative,Substance
+2865,-,Structuring,Structuring.Heading,,
+2866,"As a final point; the hyper parameters that were tuned for the MNF, noisy K-FAC and KFLA baselines are not on common ground.",Evaluative,Evaluative,N-Negative,Substance
+2867,For noisy K-FAC and MNF the lambda (which should be fixed to 1 for a correct Bayesian model) was tuned and in general lower than 1 lambdas lead to models that are overconfident and hence underperform on uncertainty tasks.,Evaluative,Evaluative,N-Negative,Substance
+2868,For KFLA a hyper parameter “tau” was tuned; this hyperparameter instead corresponds to the precision of the Gaussian prior on the parameters.,Fact,Fact,,
+2869,"In this case, KFLA always optimises a “correct” Bayesian model for every value of the hyperparameter whereas MNF and noisy K-FAC do not.",Fact,Fact,,
+2870,"Thus I believe that it would be better if you consider the same hyper parameter on all of these methods, e.g. the precision of the Gaussian prior.",Request,Request.Experiment,N-Negative,Substance
+2871,[1] Deep Variational Information Bottleneck,Other,Other,,
+2872,Summary:,Structuring,Structuring.Heading,,
+2873,"The manuscript proposes a modification of generators in GANs which improves performance under two popular metrics for multiple architectures, loss, benchmarks, regularizers, and hyperparameter settings.",Fact,Fact,,
+2874,"Using the conditional batch normalization mechanism, the input noise vector is allowed to modulate layers of the generator.",Fact,Fact,,
+2875,"As this modulation only depends on the noise vector, this technique does not require additional annotations.",Fact,Fact,,
+2876,"In addition to the extensive experimentation on different settings showing performance improvements, the authors also present an ablation study, that shows the impact of the method when applied to different layers.",Fact,Fact,,
+2877,Strengths:,Structuring,Structuring.Heading,,
+2878,- The idea is simple.,Evaluative,Evaluative,P-Positive,Substance
+2879,The experimentation is extensive and results are convincing in that they show a clear improvement in performance using the method in a large majority of settings.,Evaluative,Evaluative,P-Positive,Substance
+2880,- I also like the ablation study showing the impact of the method applied at different layers.,Evaluative,Evaluative,P-Positive,Substance
+2881,Requests for clarification/additional information:,Structuring,Structuring.Heading,,
+2882,"- I might have missed that, but are the authors offering an interpretation of their observation that the performance of the self-modulation model performs worse in the combination of spectral normalization and the SNDC architecture?",Request,Request.Experiment,N-Negative,Substance
+2883,- The ablation study shows that the impact is highest when modulation is applied to the last layer (if only one layer is modulated).,Fact,Fact,,
+2884,It seems modulation on layer 4 comes in as a close second.,Fact,Fact,,
+2885,I am curious about why that might be.,Request,Request.Explanation,P-Positive,Substance
+2886,- I would like to see some more interpretation on why this method works.,Request,Request.Clarification,N-Negative,Substance
+2887,- Did the authors inspect generated samples of the baseline and the proposed method? Is there a notable qualitative difference?,Request,Request.Experiment,N-Negative,Substance
+2888,"Overall, the idea is simple, the explanation is clear and experimentation is extensive. I would like to see more commentary on why this method might have long-term impact (or not).",Request,Request.Clarification,N-Negative,Motivation/Impact
+2889,[Edit] I changed my rating from 4 to 5 based on the author responses.,Social,Social,,
+2890,=======,Structuring,Structuring.Heading,,
+2891,This paper proposed a GAN that learns a disentangled factors of variations in unsupervised (or weakly-supervised) manner.,Structuring,Structuring.Summary,,
+2892,"To this end, the proposed method incorporates a contrastive loss together with Siamese network, which encourages the generator to output smaller variations in samples if they are drawn by varying the same latent factors.",Structuring,Structuring.Summary,,
+2893,"The proposed idea is evaluated on simple datasets such as MNIST and centered faces, and show that it is able to learn disentangled latent codes by incorporating some heuristics.",Structuring,Structuring.Summary,,
+2894,"Although the paper presents an interesting and reasonable idea, I think the paper is incomplete and in the proof-of-concept stage.",Evaluative,Evaluative,N-Negative|P-Positive,Motivation/Impact|Substance
+2895,"In terms of method, the guidance for learning Siamese networks are designed heuristically (e.g. edges, colors, etc.) which limits its applicability over various datasets; I think that designing more principled approach to build such guidances from data should be one of the key contributions of the paper.",Evaluative,Evaluative,N-Negative,Replicability
+2896,"In terms of evaluation, the authors only presented a few qualitative results on simple datasets, which is not comprehensive and convincing.",Evaluative,Evaluative,N-Negative,Substance
+2897,"In conclusion, I suggest a reject of this paper due to the lacks of comprehensive study and evaluation.",Evaluative,Evaluative,N-Negative,Substance
+2898,"In this paper, the authors propose a method for dimensionality reduction of image data.",Structuring,Structuring.Summary,,
+2899,They provide a structured and deterministic function G that maps a set of parameters C to an image X = G(C).,Structuring,Structuring.Summary,,
+2900,"The number of parameters C is smaller than the number of free parameters in the image X, so this results in a predictive model that can be used for compression, denoising, inpainting, superresolution and other inverse problems.",Structuring,Structuring.Summary,,
+2901,"The structure of G is as follows: starting with a small fixed, multichannel white noise image, linearly mix the channels, truncate the negative values to zero and upsample.",Structuring,Structuring.Summary,,
+2902,This process is repeated multiple times and finally the output is squashed through a sigmoid function for the output to remain in the 0..1 range.,Structuring,Structuring.Summary,,
+2903,"This approach makes sense and the model is indeed more principled than the one taken by Ulyanov et al. In fact, the DIP of Ulyanov et al. can hardly be considered ""a model"" (or a prior, for that matter), and instead should be considered ""an algorithm"", since it relies on the early stopping of a specific optimization algorithm.",Evaluative,Evaluative,P-Positive,Soundness/Correctness
+2904,"This means that we are not interested in the minimum of the cost function associated to the model, which contradicts the very concept of ""cost function"".",Evaluative,Evaluative,P-Positive,Soundness/Correctness
+2905,"If only global optimizers were available, DIP wouldn't work, showing its value is in the interplay of the ""cost"" function and a specific optimization algorithm.",Fact,Fact,,
+2906,None of these problems exist with the presented approach.,Evaluative,Evaluative,P-Positive,Substance
+2907,The exposition is clear and the presented inverse problems as well as demonstrated performance are sufficient.,Evaluative,Evaluative,P-Positive,Soundness/Correctness
+2908,One thing that I missed while reading the paper is more comment on negative results.,Request,Request.Explanation,U-Neutral,Substance
+2909,"Did the authors tried any version of their model with convolutions or pooling and found it not to perform as well? Measuring the number of parameters when including pooling or convolutions can become tricky, was that part of the reason?",Request,Request.Experiment,U-Neutral,Clarity
+2910,Minor:,Structuring,Structuring.Heading,,
+2911,"""Regularizing by stopping early for regularization,""",Request,Request.Typo,U-Neutral,Substance
+2912,"In this paper ""large compression ratios"" means little compression, which I found confusing.",Request,Request.Clarification,N-Negative,Clarity
+2913,The authors are proposing an end-to-end learning-based framework that can be incorporated into all classical frequency estimation algorithms in order to learn the underlying nature of the data in terms of the frequency in data streaming settings and which does not require labeling.,Structuring,Structuring.Summary,,
+2914,"According to my understanding, the other classical streaming algorithms also do not require labeling but the novelty here I guess lie in learning the oracle (HH) which feels like a logical thing to do as such learning using neural networks worked well for many other problems.",Structuring,Structuring.Summary,,
+2915,The problem formulation and applications of this research are well explained and the paper is well written for readers to understand.,Evaluative,Evaluative,P-Positive,Clarity
+2916,The experiments show that the learning based approach performs better than their all unlearned versions.,Structuring,Structuring.Summary,,
+2917,But the only negative aspect is the basis competitor algorithms are very simple in nature without any form of learning and that are very old.,Structuring,Structuring.Summary,,
+2918,"So, I am not sure if there are any new machine learning based frequency estimation algorithms.",Fact,Fact,,
+2919,The paper is well-written with a few figures to illustrate the ideas and components of the proposed method.,Evaluative,Evaluative,P-Positive,Clarity
+2920,"However, one of the main components in the proposed method is based on Tulsiani et al. CVPR'18.",Evaluative,Evaluative,U-Neutral,Originality
+2921,The remaining components of the proposed method are not very new.,Evaluative,Evaluative,N-Negative,Originality
+2922,"Hence, I am not very sure whether the novelty of the paper is significant.",Evaluative,Evaluative,N-Negative,Originality
+2923,"Nevertheless, the performance of the proposed method is fairly good outperforming all baseline methods.",Evaluative,Evaluative,P-Positive,Substance
+2924,I also have a few questions:,Structuring,Structuring.Heading,,
+2925,"1. How did you get the instance boxes, union boxes, and binary masks in testing?",Request,Request.Explanation,U-Neutral,Substance
+2926,2. What are the training and inference time?,Request,Request.Explanation,U-Neutral,Substance
+2927,This paper introduces the study of the problem of frequency estimation algorithms with machine learning advice.,Structuring,Structuring.Summary,,
+2928,"The problem considered is the standard frequency estimation problem in data streams where the goal is to estimate the frequency of the i-th item up to an additive error, i.e. the |\tilde f_i - f_i| should be minimized where \tilde f_i is the estimate of the true frequency f_i.",Structuring,Structuring.Summary,,
+2929,Pros:,Structuring,Structuring.Heading,,
+2930,-- Interesting topic of using machine learned advice to speed up frequency estimation is considered,Evaluative,Evaluative,P-Positive,Motivation/Impact
+2931,-- New rigorous bounds are given on the complexity of frequency estimation under Zipfian distribution using machine learned advice,Evaluative,Evaluative,P-Positive,Originality
+2932,-- Experiments are given to justify claimed improvements in performance,Evaluative,Evaluative,P-Positive,Substance
+2933,Cons:,Structuring,Structuring.Heading,,
+2934,"-- While the overall claim of the paper in the introduction seems to be to speed up frequency estimation using machine learned advice, results are only given for the Zipfian distribution.",Evaluative,Evaluative,N-Negative,Replicability
+2935,"-- The overall error model in this paper, which is borrowed from Roy et al. is quite restrictive as at it assumes that the queries to the frequency estimation data structure are coming from the same distribution as that given by f_i’s themselves.",Evaluative,Evaluative,N-Negative,Substance
+2936,"While in some applications this might be natural, this is certainly very restrictive in situations where f_i’s are updated not just by +/-1 increments but through arbitrary +/-Delta updates, as in this case it might be more natural to assume that the distribution of the queries might be proportional to the frequency that the corresponding coordinate is being updated, for example.",,,,
+2937,-- The algorithm proposed in the paper is very straightforward and just removes heavy hitters using oracle advice and then hashes everything else using the standard CountMin sketch.,Evaluative,Evaluative,N-Negative,Substance
+2938,-- Since CounMin is closely related to Bloom filters the idea of using machine learning to speed it up appears to be noticeably less novel given that for Bloom filters this has already been done by Mitzenmacher’18.,Evaluative,Evaluative,N-Negative,Originality
+2939,-- The analysis is relatively straightforward and boils down to bucketing the error and integration over the buckets.,Evaluative,Evaluative,N-Negative,Substance
+2940,Other comments:,Structuring,Structuring.Heading,,
+2941,"-- The machine learned advice is assumed to be flawless at identifying the Heavy Hitters, authors might want to consider incorporating errors in the analysis.",Request,Request.Edit,N-Negative,Substance
+2942,I raised my rating. After the rebuttal.,Fact,Fact,,
+2943,- the authors address most of my concerns.,Other,Other,,
+2944,- it's better to show time v.s. testing accuracy as well.,Request,Request.Experiment,N-Negative,Substance
+2945,the per-epoch time for each method is different.,Request,Request.Experiment,U-Neutral,Substance
+2946,"- anyway, the theory part acts still more like a decoration. as the author mentioned, the assumption is not realistic.",Fact,Fact,,
+2947,-------------------------------------------------------------,Structuring,Structuring.Heading,,
+2948,This paper presents a method to update hyper-parameters (e.g. learning rate) before updating of model parameters.,Structuring,Structuring.Summary,,
+2949,"The idea is simple but intuitive. I am conservative about my rating now, I will consider raising it after the rebuttal.",Other,Other,,
+2950,"1. The focus of this paper is the hyper-parameter, please focus and explain more on the usage with hyper-parameters.",Request,Request.Edit,N-Negative,Substance
+2951,"- no need to write so much in section 2.1, the surrogate is simple and common in optimization for parameters.",Evaluative,Evaluative,U-Neutral,Clarity
+2952,"After all, newton method and natural gradients method are not used in experiments.",Evaluative,Evaluative,U-Neutral,Other
+2953,"- in section 2.2, please explain more how gradients w.r.t hyper-parameters are computed.",Request,Request.Explanation,N-Negative,Replicability
+2954,2. No need to write so much decorated bounds in section 3.,Request,Request.Edit,U-Neutral,Other
+2955,"The convergence analysis is on Z, not on parameters x and hyper-parameters theta.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+2956,"So, bounds here can not be used to explain empirical observations in Section 5.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+2957,3. Could authors explain the time complexity of inner loop in Algorithm 1? Does it take more time than that of updating model parameters?,Request,Request.Clarification,U-Neutral,Substance
+2958,4. Authors have done a good comparison in the context of deep nets.,Evaluative,Evaluative,P-Positive,Substance
+2959,"However,",Request,Request.Experiment,U-Neutral,Substance
+2960,- could the authors compare with changing step-size?,,,,
+2961,"In most of experiments, the baseline methods, i.e. RMSProp are used with fixed rates.",Social,Social,,
+2962,Is it better to decay learning rates for toy data sets?,Request,Request.Experiment,N-Negative,Substance
+2963,"It is known that SGD with fixed step-size can not find the optimal for convex (perhaps, also simple) problems.",Request,Request.Experiment,N-Negative,Substance
+2964,"- how to tune lambda? it is an important hyper-parameter, but it is set without a good principle, e.g., ""For SGD-APO, we used lambda = 0.001, while for SGDm-APO, we used lambda = 0.01"", ""while for RMSprop-APO, the best lambda was 0.0001",Request,Request.Explanation,N-Negative,Replicability
+2965,"""",,,,
+2966,.,,,,
+2967,What are reasons for these?,Request,Request.Explanation,N-Negative,Replicability
+2968,"- In Section 5.2, it is said lambda is tuned by grid-search.",Fact,Fact,,
+2969,"Tuning a good lambda v.s. tuning a good step-size, which one costs more?",Request,Request.Explanation,N-Negative,Substance
+2971,This paper introduces Amortized Proximal Optimization (APO) that optimizes a proximal objective at each optimization step.,Structuring,Structuring.Summary,,
+2972,The optimization hyperparameters are optimized to best minimize the proximal objective.,Structuring,Structuring.Summary,,
+2973,"The objective is represented using a regularization style parameter lambda and a distance metric D that, depending on its definition, reduces the optimization procedure to Gauss-Newton, General Gauss Newton or Natural Gradient Descent.",Structuring,Structuring.Summary,,
+2974,"There are two key convergence results which are dependent on the meta-objective being optimized directly which, while not practical, gives some insight into the inner workings of the algorithm.",Structuring,Structuring.Summary,,
+2975,The first result indicates strong convergence when using the Euclidean distance as the distance measure D.,Fact,Fact,,
+2976,The second result shows strong convergence when D is set as the Bregman divergence.,Fact,Fact,,
+2977,The algorithm optimizes the base optimizer on a number of domains and shows state-of-the-art results over a grid search of the hyperparameters on the same optimizer.,Structuring,Structuring.Summary,,
+2978,Clarity and Quality: The paper is well written.,Evaluative,Evaluative,P-Positive,Clarity
+2979,Originality: It appears to be a novel application of meta-learning.,Evaluative,Evaluative,P-Positive,Originality
+2980,I wonder why the authors didn’t compare or mention optimizers such as ADAM and ADAGRAD which adapt their parameters on-the-fly as well.,Request,Request.Explanation,N-Negative,Substance
+2981,Also how does this compare to adaptive hyperparameter training techniques such as population based training?,Request,Request.Explanation,U-Neutral,Substance
+2982,Significance:,Structuring,Structuring.Heading,,
+2983,Overall it appears to be a novel and interesting contribution.,Evaluative,Evaluative,P-Positive,Originality
+2984,I am concerned though why the authors didn’t compare to adaptive optimizers such as ADAM and ADAGRAD and how the performance compares with population based training techniques.,Evaluative,Evaluative,N-Negative,Substance
+2985,"Also, your convergence results appear to rely on strong convexity of the loss.",Fact,Fact,,
+2986,How is this a reasonable assumption?,Request,Request.Explanation,N-Negative,Soundness/Correctness
+2987,These are my major concerns.,Other,Other,,
+2988,"Question: In your experiments, you set the learning rate to be really low. What happens if you set it to be arbitrarily high? Can you algorithm recover good learning rates?",Request,Request.Experiment,U-Neutral,Substance
+2989,"This paper addresses a problem that arises in ""universal"" value-function approximation (that is, reinforcement-learning when a current goal is included as part of the input);  when doing experience replay, the experience buffer might have much more representation of some goals than others, and it's important to keep the training appropriately balanced over goals.",Structuring,Structuring.Summary,,
+2990,"So, the idea is to a kind of importance weighting of the trajectory memory, by doing a density estimation on the goal distribution represented in the memory and then sample them for training in a way that is inversely related to their densities",Structuring,Structuring.Summary,,
+2992,"This method results in a moderate improvement in the effectiveness of DDPG, compared to the previous method for hindsight experience replay.",Structuring,Structuring.Summary,,
+2993,"The idea is intuitively sensible, but I believe this paper falls short of being ready for publication for three major reasons.",Evaluative,Evaluative,P-Positive,Motivation/Impact
+2994,"First, the mechanism provided has no mathematical justification--it seems fairly arbitrary.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+2995,"Even if it's not possible to prove something about this strategy, it would be useful to just state a desirable property that the sampling mechanism should have and then argue informally that this mechanism has that property.",Request,Request.Edit,U-Neutral,Substance
+2996,"As it is, it's just one point in a large space of possible mechanisms.",Fact,Fact,,
+2997,"I have a substantial concern that this method might end up assigning a high likelihood of resampling trajectories where something unusual happened, not because of the agent's actions, but because of the world having made a very unusual stochastic transition.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+2998,"If that's true, then this distribution would be very bad for training a value function, which is supposed to involve an expectation over ""nature""'s choices in the MDP.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+2999,"Second, the experiments are (as I understand it, but I may be wrong) in deterministic domains, which definitely does not constitute a general test of a proposed RL  method.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3000,- I'm not sure we can conclude much from the results on fetchSlide (and it would make sense not to use the last set of parameters but the best one encountered during training),Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3001,- What implementation of the other algorithms did you use?,Request,Request.Clarification,U-Neutral,Substance
+3002,"Third, the writing in the paper has some significant lapses in clarity.",Evaluative,Evaluative,N-Negative,Clarity
+3003,"I was a substantial way through the paper before understanding exactly what the set-up was;  in particular, exactly what ""state"" meant was not clear.",Evaluative,Evaluative,N-Negative,Clarity
+3004,"I would suggest saying something like s = ((x^g, x^c), g) where s is a state from the perspective of value iteration, (x^g, x^c) is a state of the system, which is a vector of values divided into two sub-vectors, x^g is the part of the system state that involves the state variables that are specified in the goal, x^c (for 'context')",Request,Request.Edit,P-Positive,Clarity
+3005,"is the rest of the system state, and g is the goal.",,,,
+3006,The dimensions of x^g and g should line up.,,,,
+3007,"- This sentence  was particularly troublesome:  ""Each  state s_t also includes the state of the achieved goal, meaning the goal state is a subset of the normal state.",Evaluative,Evaluative,N-Negative,Clarity
+3008,"Here, we overwrite the notation s_t  as the achieved goal state, i.e., the state of the object.""",,,,
+3009,"- Also, it's important to say what the goal actually is, since it doesn't make sense for it to be a point in a continuous space.",Evaluative,Evaluative,N-Negative,Clarity
+3010,"(You do say this later, but it would be helpful to the reader to say it earlier.)",,,,
+3011,The paper presents a novel hierarchical clustering method over an embedding space.,Structuring,Structuring.Summary,,
+3012,"In the presented approach, both the embedding space and the hierarchical clustering are simultaneously learnt.",Structuring,Structuring.Summary,,
+3013,The hierarchical clustering algorithm aims to recover complex clustering hierarchies which cannot be captured by previously proposed methods.,Structuring,Structuring.Summary,,
+3014,"The paper address a relevant problem, which is of great interest for extracting knowledge from data.",Evaluative,Evaluative,P-Positive,Motivation/Impact
+3015,"In general, the quality of the paper is high.",Evaluative,Evaluative,P-Positive,Other
+3016,The presented approach is based on a sound formalization of hierarchical clustering and deep generative models.,Fact,Fact,,
+3017,The paper is easy to follow in spite of the technical difficulty.,Evaluative,Evaluative,P-Positive,Clarity
+3018,The experimental evaluation is really extensive.,Evaluative,Evaluative,P-Positive,Substance
+3019,It compares against many state-of-the-art methods. And the results are promising from both a quantitative and qualitative point view.,Evaluative,Evaluative,P-Positive,Substance
+3020,"The only issue with this paper is its degree of novelty, which is narrow.",Evaluative,Evaluative,N-Negative,Originality
+3021,"The proposed method adapt a previously presented hierarchical clustering method in the ""standard space"" (Griffiths et al., 2004) to an embedding space defined by a variational autoencoder model.",Evaluative,Evaluative,N-Negative,Originality
+3022,"The inference algorithm builds on standard techniques of deep generative models and, also, on previously proposed methods (Wand and Blei, 2003) for dealing with the complex hierarchical priors involved in this kind of models.",Evaluative,Evaluative,N-Negative,Originality
+3023,The present paper proposes a fast approximation to the softmax computation when the number of classes is very large.,Structuring,Structuring.Summary,,
+3024,This is typically a bottleneck in deep learning architectures.,Structuring,Structuring.Summary,,
+3025,The approximation is a sparse two-layer mixture of experts.,Structuring,Structuring.Summary,,
+3026,"The paper lacks rigor and the writing is of low quality, both in its clarity and its grammar.",Evaluative,Evaluative,N-Negative,Clarity
+3027,See a list of typos below.,Structuring,Structuring.Heading,,
+3028,"An example of lack of mathematical rigor is equation 4 in which the same variable name is used to describe the weights before and after pruning, as if it was computer code instead of an equation.",Evaluative,Evaluative,N-Negative,Clarity
+3029,"Also pervasive is the use of the asterisk to denote multiplication, again as if it was code and not math.",Evaluative,Evaluative,N-Negative,Clarity
+3030,"Algorithm 1 does not include mitosis, which may have an effect on the resulting approximation.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3031,"How are the lambda and threshold parameters tuned? The authors mention a validation set, are they just exhaustively explored on a 3D grid on the validation set?",Request,Request.Explanation,N-Negative,Replicability
+3032,"The results only compare with Shim et al. Why only this method? Why would it be expected to be faster than all the other alternatives? Wouldn't similar alternatives like the sparsely gated MoE, D-softmax and adaptive-softmax have chances of being faster?",Request,Request.Explanation,N-Negative,Soundness/Correctness
+3033,"The column ""FLOPS"" in the result seems to measure the speedup, whereas the actual FLOPS should be less when the speed increases.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3034,"Also, a ""1x"" label seems to be missing in for the full softmax, so that the reference is clearly specified.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3035,"All in all, the results show that the proposed method provides a significant speedup with respect to Shim et al., but it lacks comparison with other methods in the literature.",Evaluative,Evaluative,N-Negative,Substance
+3036,A brief list of typos:,Structuring,Structuring.Heading,,
+3037,"""Sparse Mixture of Sparse of Sparse Experts""",Request,Request.Edit,N-Negative,Clarity
+3038,"""if we only search right answer""",Request,Request.Edit,N-Negative,Clarity
+3039,"""it might also like appear""",Request,Request.Edit,N-Negative,Clarity
+3040,"""which is to design to choose the right""",Request,Request.Edit,N-Negative,Clarity
+3041,sparsly,Request,Request.Edit,N-Negative,Clarity
+3042,"""will only consists partial""",Request,Request.Edit,N-Negative,Clarity
+3043,"""with γ is a lasso threshold""",Request,Request.Edit,N-Negative,Clarity
+3044,"""an arbitrarily distance function""",Request,Request.Edit,N-Negative,Clarity
+3045,"""each 10 sub classes are belonged to one""",Request,Request.Edit,N-Negative,Clarity
+3046,"""is also needed to tune to achieve""",Request,Request.Edit,N-Negative,Clarity
+3047,The paper proposes a framework for learning interpretable latent representations for GANs.,Structuring,Structuring.Summary,,
+3048,The key idea is to use siamese networks with contrastive loss.,Structuring,Structuring.Summary,,
+3049,"Specifically, it decomposes the latent code to a set of knobs (sub part of the latent code).",Structuring,Structuring.Summary,,
+3050,Each time it renders different images with different configurations of the knobs.,Structuring,Structuring.Summary,,
+3051,"For example, 1) as changing one knob while keeping the others, it expects it would only result in change of one attribute in the image, and 2) as keeping one knob while changing all the others, it expects it would result in large change of image appearances.",Structuring,Structuring.Summary,,
+3052,The relative magnitude of change for 1) and 2) justifies the use of a Siamese network in addition to the image discriminator in the standard GAN framework.,Structuring,Structuring.Summary,,
+3053,The paper further talks about how to use inductive bias to design the Siamese network so that it can control the semantic meaning of a particular knob.,Structuring,Structuring.Summary,,
+3054,"While I do like the idea, I think the paper is still in the early stage.",Evaluative,Evaluative,N-Negative,Motivation/Impact
+3055,"First of all, the paper does not include any numerical evaluation.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3056,It only shows a couple of examples.,Structuring,Structuring.Heading,,
+3057,It is unclear how well the proposed method works in general.,Evaluative,Evaluative,N-Negative,Clarity
+3058,"In addition, the InfoGAN work is designed  for the same functionality.",Structuring,Structuring.Heading,,
+3059,The paper should compare the proposed work to the InfoGAN work both quantitatively and qualitatively to justify its novelty.,Evaluative,Evaluative,N-Negative,Meaningful Comparison
+3060,The paper investigates the Frank-Wolfe (FW) algorithm for constructing adversarial examples both in a white-box and black-box setting.,Fact,Fact,,
+3061,The authors provide both a theoretical analysis (convergence to a stationary point) and experiments for an InceptionV3 network on ImageNet.,Fact,Fact,,
+3062,"The main claim is that the proposed algorithm can construct adversarial examples faster than various baselines (PGD, I-FGSM, CW, etc.), and from fewer queries in a black-box setting.",Fact,Fact,,
+3063,"The FW algorithm is a classical method in optimization, but (to the best of my knowledge) has not yet been evaluated yet for constructing adversarial examples.",Fact,Fact,,
+3064,Hence it is a natural question to understand whether FW performs significantly better than current algorithms in this context.,Fact,Fact,,
+3065,"Indeed, the authors find that FW is 6x - 20x faster for constructing white-box adversarial examples than a range of relevant baseline, which is a significant speed-up.",Fact,Fact,,
+3066,"However, there are several points about the experiments that are unclear to me:",Structuring,Structuring.Heading,,
+3067,- It is well known that the running times of optimization algorithms are highly dependent on various hyperparameters such as the step size.,Fact,Fact,,
+3068,But the authors do not seem to describe how they chose the hyperparameters for the baselines algorithms.,Evaluative,Evaluative,N-Negative,Clarity
+3069,Hence it is unclear how large the running time improvement is compared to a well-tuned baseline.,Evaluative,Evaluative,N-Negative,Clarity
+3070,- Other algorithms in the comparison achieve a better distortion (smaller perturbation).,Fact,Fact,,
+3071,"Since finding an adversarial with smaller perturbation is a harder problem, it is unclear how the algorithms compare for finding adversarial examples with similar distortion.",Evaluative,Evaluative,N-Negative,Clarity
+3072,"Instead of reporting a single time-vs-distortion data point, the authors could show the full trade-off curve.",Request,Request.Experiment,P-Positive,Substance
+3073,"- The authors only provide running times, not the number of iterations.",Request,Request.Experiment,P-Positive,Substance
+3074,"In principle all the algorithms should have a similar bottleneck in each iteration (computing a gradient for the input image), but it would be good to verify this with an iteration count vs success rate (or distortion) plot.",Request,Request.Experiment,P-Positive,Substance
+3075,This would also allow the authors to compare their theoretical iteration bound with experimental data.,Request,Request.Experiment,P-Positive,Substance
+3076,"In addition to these three main points, the authors could strengthen their results by providing experiments on another dataset (e.g., CIFAR-10) or model architecture (e.g., a ResNet), and by averaging over a larger number of test data points (currently 200).",Request,Request.Experiment,P-Positive,Substance
+3077,"Overall, I find the paper a promising contribution. But until the authors provide a more thorough experimental evaluation, I hesitate to recommend acceptance.",Evaluative,Evaluative,N-Negative,Substance
+3078,Additional comments:,Structuring,Structuring.Heading,,
+3079,The introduction contains a few statements that may paint an incomplete or confusing picture of the current literature in adversarial attacks on neural networks:,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3080,* The abstract claims that the poor time complexity of adversarial attacks limits their practical usefulness.,Fact,Fact,,
+3081,"However, the running time of attacks is typically measured in seconds and should not be the limiting element in real-world attacks on deep learning systems.",Fact,Fact,,
+3082,I am not aware of a setting where the running time of an attack is the main computational bottleneck (outside adversarial training).,Fact,Fact,,
+3083,"* The introduction distinguishes between ""gradient-based methods"" and ""optimization-based methods"".",Structuring,Structuring.Heading,,
+3084,"This distinction is potentially confusing to a reader since the gradient-based methods can be seen as optimization algorithms, and the optimization-based methods rely on gradients.",Fact,Fact,,
+3085,* The introduction claims that black-box attacks need to estimate gradients coordinate-wise.,Structuring,Structuring.Heading,,
+3086,"However, this is not the case already in some of the prior work that uses random directions for estimating gradients (e.g., the cited paper by Ilyas et al.)",Fact,Fact,,
+3087,I encourage the authors to clarify these points in an updated version of their paper.,Request,Request.Clarification,N-Negative,Substance
+3088,The authors propose a notion of conductance to attribute the deep neural network’s prediction to its hidden units.,Structuring,Structuring.Summary,,
+3089,The conductance is the flow of attribution via the hidden unit(s) in consideration.,Structuring,Structuring.Summary,,
+3090,The paper proposes using conductance to not only evaluate importance of hidden unit to the prediction for a specific input but also over a set of inputs.,Structuring,Structuring.Summary,,
+3091,The strongest part of the analysis of conductance is that conductance naturally couples  the path at the base features with that of the hidden layer.,Evaluative,Evaluative,P-Positive,Substance
+3092,The authors position their work well within the existing approaches in the community and generalizes the efficient use of measuring hidden activation wrt to specific input or set of inputs.,Evaluative,Evaluative,P-Positive,Soundness/Correctness
+3093,The analysis makes efficient use of mean value theorem in the context of  parametrization of the loss function.,Evaluative,Evaluative,P-Positive,Soundness/Correctness
+3094,Conductance seems to satisfy the completeness of hidden features.,Evaluative,Evaluative,P-Positive,Soundness/Correctness
+3095,"Further, it also satisfies the layer-wise conservation principle with the outputs completely redistributed  to the inputs.",Evaluative,Evaluative,P-Positive,Substance
+3096,It would be good to see more analysis on the axioms 1 through to 4 for the sake of completeness in the light of partial axiomatization of conductance.,Request,Request.Explanation,U-Neutral,Substance
+3097,The authors provide empirical evaluation of conductance over a variety of tasks.,Evaluative,Evaluative,U-Neutral,Substance
+3098,"It would be good to see some more insight in order to relate to interpretability of the importance of neurons, although there has been no claims made on it as its hard to measure importance without interpretability.",Request,Request.Explanation,U-Neutral,Substance
+3099,The paper proposes an approach to adapt hyperparameters online.,Structuring,Structuring.Summary,,
+3100,"When learning rates are in focus, a convincing message would be to show that adaptation of learning rates is more efficient and simpler than their scheduling when tested on state-of-the-art architectures.",Evaluative,Evaluative,N-Negative,Substance
+3101,A. You demonstrate the results on CIFAR-10 for 10% error rates which corresponds to networks which are far from what is currently used in deep learning.,Evaluative,Evaluative,N-Negative,Substance
+3102,"Thus, it is hard to say whether the results are applicable in practice.",Evaluative,Evaluative,N-Negative,Substance
+3103,B. You don't schedule learning rates for your baseline methods except for a single experiment for some initial learning rate.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3104,C. Your method involves a hyperparameter to be tuned which affects the shape of the schedule.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3105,This hyperparameter itself benefits from (requires?) some scheduling.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3106,It would be interesting to see if the proposed method is competitive for training contemporary networks and w.r.t. simple schedule schemes.,Request,Request.Experiment,N-Negative,Substance
+3107,Online tuning of  hyperparameters is an important functionality and I hope your paper will make it more straightforward to use it in practice.,Other,Other,,
+3108,* Minor notes:,Structuring,Structuring.Heading,,
+3109,"You mention that ""APO converges quickly from different starting points on the Rosenbrock surface"" but 10000 iterations is not quick at all for the 2-dimensional Rosenbrock, it is extremely slow compared to 100-200 function evaluations needed for Nelder-Mead to solve it. I guess you mean",Other,Other,,
+3110,w.r.t. the original RMSprop.,,,,
+3111,The paper addresses the problem of producing sensible (high) uncertainties on out of distribution (OOD) data along with accurate predictions on in-distribution data.,Structuring,Structuring.Summary,,
+3112,The authors consider a model wherein the weights of the network (\theta) are drawn from a matrix normal distribution whose parameters are in-turn a (non-linear; parameterized by a another network) function of the covariates (x).,Structuring,Structuring.Summary,,
+3113,"Instead of inferring a posterior over theta that then induces the predictive uncertainties, uncertainties here arise from a regularizer that penalizes the distribution over theta from deviating too far from a standard Normal.",Structuring,Structuring.Summary,,
+3114,"Experiments present results on toy data, MNIST/not MNIST as well as on adversarial perturbations of MNIST and CIFAR 10 datasets.",Structuring,Structuring.Summary,,
+3115,The paper is clearly written and addresses an important problem.,Evaluative,Evaluative,P-Positive,Clarity
+3116,The paper presents both an alternate model as well as an alternate objective function.,Structuring,Structuring.Summary,,
+3117,"While the authors do report some interesting results, they do a poor job of motivating the proposed extensions.",Evaluative,Evaluative,N-Negative,Replicability
+3118,It isn’t clear why the particular proposals are necessary or to which of the proposed extensions the inflated OOD uncertainties can be attributed:,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3119,1. The proposed model? Is using a conditional weight prior p(\theta | x) (Eq 3) instead of p(\theta) (as in BNNs)  necessary for the inflated uncertainties on OOD data?,Request,Request.Explanation,,Soundness/Correctness
+3120,"2. The  objective? The proposed objective,  Eq 5, trades off stochastically approximating the (conditional) marginal likelihood against not deviating too much from p(\theta) =  MN(0, I, I) in the KL sense.",Request,Request.Explanation,N-Negative,Soundness/Correctness
+3121,"Depending on \lambda, the objective either closely approximates the marginal likelihood or not.",Fact,Fact,,
+3122,It is unclear how important this particular objective is to the results.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3123,"-  Instead of relying on the KL regularizer, a standard approach to learning the model in Eq 3 would be to use well understood MCMC or variational methods that explicitly retain uncertainty in \theta and induce predictive uncertainties.  Were they explored and found to be not effective?",Request,Request.Explanation,N-Negative,Soundness/Correctness
+3124,It would be nice to see how a “gold standard” HMC based inference does on at least the small toy problem of Sec 5.1?,Request,Request.Experiment,N-Negative,Substance
+3125,"- There is also a closely related variant of Eq 3 which we can arrive at by switching the log and the expectation in the first term of Eq 5 and applying Jensen’s inequality —> E_p(\theta| x)[ln p(y | x, \theta)] - KL (p(\theta | x) || p(\theta)).",Fact,Fact,,
+3126,"This would correspond to maximizing a valid lower bound to the marginal likelihood of a BNN model p(y | x, \theta) p(\theta), while interpreting p(\theta | x) as an amortized variational approximation.",Fact,Fact,,
+3127,"This variant has the advantage that it provides a valid lower bound on the marginal likelihood, and exploits the well understood variational inference machinery.",Fact,Fact,,
+3128,"This also immediately suggests, that the variational approximation , p (\theta | x)  should probably depend on both x and y rather than only on x and the flexibility of the hyper networks g would govern how well the true posterior over weights \theta can be approximated.",Fact,Fact,,
+3129,Comparisons against these more standard inference algorithms is essential for understanding what advantages are afforded by the objective proposed in the paper.,Request,Request.Experiment,N-Negative,Substance
+3130,"3.  Or simply to a well tuned \lambda, chosen on a per dataset basis? From the text it appears that \lambda is manually selected to trade off accuracy against uncertainty on OOD data.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3131,"In the real world, one would not have access to OOD data during training, how is one to pick \lambda in such cases?",Request,Request.Explanation,N-Negative,Soundness/Correctness
+3132,Detailed comments about experiments:,Structuring,Structuring.Heading,,
+3133,a) The uncertainties produced by CDN in Figure 2 seems strange.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3134,"Why does it go to nearly zero around x = 0, while being higher in surrounding regions with more data?",Request,Request.Explanation,N-Negative,Soundness/Correctness
+3135,b) Down weighting the KL term by lambda for the VI techniques unfairly biases the comparison.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3136,"This forces the VI solution to tend to the MLE, sacrificing uncertainty in the variational distribution.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3137,It would be good to include comparisons against VI with \lambda = 1.,Request,Request.Experiment,N-Negative,Substance
+3138,==========,Structuring,Structuring.Heading,,
+3139,There are potentially interesting ideas in this paper.,Evaluative,Evaluative,P-Positive,Originality
+3140,"However, as presented these ideas are poorly justified and careful comparisons against sensible baselines are missing.",Evaluative,Evaluative,N-Negative,Substance
+3141,The paper proposes using the Frank-Wolfe algorithm for fast adversarial attacks.,Fact,Fact,,
+3142,They prove upper bounds on the Frank-Wolfe gap and show experimentally that they can attack successfully much faster than other algorithms.,Evaluative,Evaluative,P-Positive,Substance
+3143,"In general I find the paper novel (to the best of my somewhat limited knowledge), interesting and well written.",Evaluative,Evaluative,P-Positive,Originality
+3144,However I find the white-box experiments lacking as almost every method has 100% success rate.,Evaluative,Evaluative,N-Negative,Substance
+3145,Fixing this would significantly improve the paper.,,,,
+3146,Main remarks:,Structuring,Structuring.Heading,,
+3147,- Need more motivation for faster white-box attack.,Evaluative,Evaluative,N-Negative,Motivation/Impact
+3148,"One good motivation for example is adversarial training, e.g. Kurakin et al 2017 ‘ADVERSARIAL MACHINE LEARNING AT SCALE’ that would benefit greatly from faster attacks",Fact,Fact,,
+3149,"- White-box attack experiments don’t really prove the strength of the method, even with imagenet experiments, as almost all attacks get 100% success rate making it hard to compare.",Evaluative,Evaluative,N-Negative,Substance
+3150,"Need to compare in more challenging settings where the success rate is meaningful, e.g. smaller epsilon or a more robust NN using some defence.",Request,Request.Experiment,N-Negative,Substance
+3151,Also stating the 100% success rate in the abstract is a bit misleading for the this reason.,Evaluative,Evaluative,N-Negative,Substance
+3152,"-Something is a bit weird with the FGM results. While it is a weaker attack, a 0%/100% disparity between it and every other",Evaluative,Evaluative,N-Negative,Clarity
+3153,attack seems odd.,,,,
+3154,-The average distortion metric (that’s unfavourable to your method anyway) doesn’t really mean anything as the constraint optimization has no incentive to find a value smaller than the constraint.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3155,"- Regarding lambda>1, you write that “we argue this modification makes our algorithm more general, and gives rise to better attack results”.",Fact,Fact,,
+3156,I did not see any theoretical or empirical support for this in the paper.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3157,"Also, it seems quite strange to me that making the FW overshot and then projecting back would be beneficial.",Evaluative,Evaluative,N-Negative,Clarity
+3158,Some intuitive explanation on why this should help and/or empirical comparison would be a great addition.,Request,Request.Explanation,P-Positive,Substance
+3159,"- The authors claim that this is the first zeroth-order non-convex FW convergence rate, I am not familiar enough with the field to evaluate this claim and its significance.",Evaluative,Evaluative,U-Neutral,Substance
+3160,"- Alg. 1 for T>1 is very similar to I-FGM, but also ‘pulls’ x_t towards x_orig.",Fact,Fact,,
+3161,It would be very useful to write the update more explicitly and compare and contrast this 2 very similar updates.,Request,Request.Experiment,P-Positive,Substance
+3162,This gives nice insight into why this should intuitively work better.,,,,
+3163,"- I am not sure what the authors mean by “the Frank-Wolfe gap is affine invariant”. If we scale the input space by a, the gap should be scaled by a^2 - how/why is it invariant?",Request,Request.Explanation,N-Negative,Soundness/Correctness
+3164,- I am not sure what you mean in 5.4 “we omit all grid search/ binary search steps,Request,Request.Clarification,N-Negative,Clarity
+3165,…”,,,,
+3166,Minor remarks:,Structuring,Structuring.Heading,,
+3167,- In remark 4.8 in the end option I and II are inverted by mistake,Request,Request.Edit,N-Negative,Soundness/Correctness
+3168,"- In 5.1, imagenet results are normally top-5 error rate not top-1 acc, would be better to report that more familiar number.",Request,Request.Edit,N-Negative,Soundness/Correctness
+3169,"- In the proof you wrongfully use the term telescope sum twice, there is nothing telescopic about the sum it is just bound by the max value times the length.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3170,"This paper proposes an evaluation method for confidence thresholding defense models, as well as a new approach for generating of adversarial examples by choosing the wrong class with the most confidence when employing targeted attacks.",Structuring,Structuring.Summary,,
+3171,"Although the idea behind this paper is fairly simple, the paper is very difficult to understand.",Evaluative,Evaluative,N-Negative,Clarity
+3172,I have no idea that what is the propose of defining a new evaluation method and how this new evaluation method helps in the further design of the MaxConfidence method.,Evaluative,Evaluative,N-Negative,Motivation/Impact
+3173,"Furthermore, the usage of the evaluation method unclear as well, it seems to be designed for evaluating the effectiveness of different adversarial attacks in Figure 2.",Request,Request.Clarification,N-Negative,Clarity
+3174,"However, in Figure 2, it is used for evaluating defense schemes.",Fact,Fact,,
+3175,"Again, this confuses me on what is the main topic of this paper.",Evaluative,Evaluative,N-Negative,Clarity
+3176,"Indeed, why the commonly used attack success ratio or other similar measures cannot be used in the case?",Request,Request.Explanation,U-Neutral,Substance
+3177,"Intuitively, it should provide similar results to the success-failure curve.",Other,Other,,
+3178,"The paper also lacks experimental results, and the main conclusion from these results seems to be ""MNIST is not suitable for benchmarking of adversarial attacks"".",Request,Request.Experiment,N-Negative,Soundness/Correctness
+3179,"If the authors claim that the proposed MaxConfidence attack method is more powerful than the MaxLoss based attacks, they should provide more comparisons between these methods.",Request,Request.Edit,N-Negative,Meaningful Comparison
+3180,"Meanwhile, the computational cost on large dataset such as ImageNet could be huge, the authors should further develop the method to make sure it works in all situations.",Evaluative,Evaluative,U-Neutral,Substance
+3181,Summary,Structuring,Structuring.Heading,,
+3182,The paper presents a novel approach for learning a generative model where different factors of variations can be independently manipulated.,Structuring,Structuring.Summary,,
+3183,The method is build upon  the GAN framework where the latent variables are divided into different subsets (chunks) which are expected to encode information about high-level factors of variation.,Structuring,Structuring.Summary,,
+3184,"To this end, a Siamese Network for each chunk is trained with a contrastive loss minimizing the distance between generated images sharing the same factor (the latent variables in the chunk are equal), and maximizing the distance between pairs where the latent variables differ.",Structuring,Structuring.Summary,,
+3185,"Given that the proposed model fails in this fully-unsupervised setting, the authors propose to add weak-supervision into the model by forcing the Siamese networks to  focus only on particular aspects of generated images (e.g, color, edges, etc..).",Structuring,Structuring.Summary,,
+3186,This is achieved by applying  a basic transformation  over the input images in order to remove specific information.,Structuring,Structuring.Summary,,
+3187,The evaluation of the  proposed model is carried out using the MS-Celeb dataset where the authors provide qualitative results.,Structuring,Structuring.Summary,,
+3188,Methodology,Structuring,Structuring.Heading,,
+3189,*Disentangling generative factors without explicit labels is a challenging and interesting problem.,Structuring,Structuring.Heading,,
+3190,The idea of dividing the latent representation in different subsets and using a proxy task involving triplets of images has been already explored in [3].,Fact,Fact,,
+3191,"However, the use of Siamese networks in this context is novel and sound.",Evaluative,Evaluative,P-Positive,Originality
+3192,"*As shown in the reported results, the proposed method fails to learn meaningful factors in the unsupervised setting.",Structuring,Structuring.Quote,,
+3193,"However, the authors do not provide an in-depth discussion of this phenomena.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3194,"Given that previous works [1,2,3] have successfully addressed this problem using a completely unsupervised approach, it would be necessary to give more insights about: (i) why the proposed method is failing (ii) why this negative result is interesting and (iii) if the method could be useful in other potential scenarios.",Request,Request.Explanation,N-Negative,Soundness/Correctness
+3195,*The strategy proposed to introduce weak-supervision is too ad-hoc.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3196,I agree that using cues such as the average color of an image can be useful if we want to model basic factors of variation.,Evaluative,Evaluative,P-Positive,Soundness/Correctness
+3197,"However, it is unclear how a similar strategy could be applied if we are interested in learning variables with higher-level semantics such as the expression of a face or its pose.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3198,"*As far as I understand, the transformations applied to the input images (e.g, edge detection) must be differentiable (given that it is necessary to backpropagate the gradient of the contrastive loss through the generator network).",Structuring,Structuring.Quote,,
+3199,"If this is the case, this should be properly discussed in the paper.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3200,"Moreover, given that the amount of differentiable transformations is reduced, this also limits the application of the proposed method for more interesting scenarios.",Evaluative,Evaluative,N-Negative,Substance
+3201,*It is not clear why the latent variables modelling the generative factors are defined using a Gaussian prior.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3202,How the case where two images have a very similar latent factor is avoided while generating pairs of images for the Siamese network?,Request,Request.Clarification,,
+3203,Have the authors considered to use categorical or binary variables?,Request,Request.Clarification,U-Neutral,Substance
+3204,The use of the contrastive loss sounds more appropriate in this case.,Request,Request.Experiment,U-Neutral,Substance
+3205,Experimental results,Structuring,Structuring.Heading,,
+3206,*The experimental section is too limited.,Evaluative,Evaluative,N-Negative,Substance
+3207,"First of all, only a small number of qualitative results are reported and, therefore, it is very difficult to assess the proposed method and draw any conclusion.",Evaluative,Evaluative,N-Negative,Substance
+3208,"For example, when the edge extractor is used, what kind of information is modeled by the latent variables? Is it consistent across different samples?",Request,Request.Clarification,N-Negative,Substance
+3209,"Moreover, it is not clear why the authors have limited the evaluation to the case where only two “chunks” are used.",Request,Request.Clarification,N-Negative,Substance
+3210,"In principle, the method could be applied with many more subsets of latent variables and then manually inspect them to check it they are semantically meaningful (see [2])",Request,Request.Experiment,P-Positive,Substance
+3211,"*As previously mentioned, there are many recent works addressing the same problem from a fully-unsupervised perspective [1,2,3].",Fact,Fact,,
+3212,"All these works provide quantitative results evaluating the learned representations by using them to predict real labels (e.g, attributes in the CelebA data-set).",Fact,Fact,,
+3213,The authors could provide a similar evaluation for their method by using the feature representations learned by the siamese networks in order to evaluate how much information they convey about real factors of variation.,Request,Request.Experiment,P-Positive,Substance
+3214,This could clarify the advantages of the weakly-supervised strategy compared to unsupervised approaches.,Fact,Fact,,
+3215,Review summary,Structuring,Structuring.Heading,,
+3216,+The addressed problem (learning disentangled representations without explicit labeling) is challenging and interesting.,Evaluative,Evaluative,P-Positive,Motivation/Impact
+3217,+The idea of using a proxy task (contrastive loss with triplets of generated images) is somewhat novel and promising.,Evaluative,Evaluative,P-Positive,Originality
+3218,- The authors report only negative results for the fully-unsupervised version of UD-GAN The paper lacks and in-depth discussion about why this negative result is interesting.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3219,-The strategy proposed to provide weak-supervision to the model is too ad-hoc and it is not clear how to apply it in general applications,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3220,-The experimental section do not clarify the benefits of the proposed approach.,Evaluative,Evaluative,N-Negative,Substance
+3221,"In particular, the qualitative results are too limited and no quantitative evaluations is provided.",Evaluative,Evaluative,N-Negative,Substance
+3222,"[1] Variational Inference of Disentangled Latent Concepts from Unlabelled Observations (Kumar et al, ICLR 2018)",Other,Other,,
+3223,"[2] Beta-vae: Learning basic visual concepts with a constrained variational framework. (Higgins et. al, ICLR 2017)",,,,
+3224,[3] Disentangling Factors of Variation by Mixing Them.,,,,
+3225,"(Hu et. al, CVPR  2018)",,,,
+3226,The paper proposes a novel method for sampling examples for experience replay.,Structuring,Structuring.Summary,,
+3227,It addresses the problem of having inbalanced data (in the experience buffer during training).,Structuring,Structuring.Summary,,
+3228,The authors trained a density model and replay the trajectories that has a low density under the model.,Structuring,Structuring.Summary,,
+3229,Novelty:,Other,Other,,
+3230,"The approach is related to prioritized experience replay, PER is computational expensive because of the TD error update, in comparison, CDR only updates trajectory density once per trajectory.",Structuring,Structuring.Summary,,
+3231,Clarity:,Other,Other,,
+3232,The paper seems to lack clarity on certain design/ architecture/ model decisions.,Evaluative,Evaluative,N-Negative,Clarity
+3233,"For example, the authors did not justify why VGMM model was chosen and how does it compare to other density estimators.",Evaluative,Evaluative,N-Negative,Clarity
+3234,"Also, I had to go through a large chunk of the paper before coming across the exact setup.",Evaluative,Evaluative,N-Negative,Clarity
+3235,I think the paper could benefit from having this in the earlier sections.,Evaluative,Evaluative,N-Negative,Clarity
+3236,Other comments about the paper:,Other,Other,,
+3237,-  I do like the idea of the paper.,Evaluative,Evaluative,P-Positive,Motivation/Impact
+3238,It also seems that curiosity in this context seems to be very related to surprise? There are neuroscience evidence indicating that humans turns to remember (putting more weights) on events that are more surprising.,Request,Request.Clarification,U-Neutral,Motivation/Impact
+3239,"- The entire trajectory needs to be stored, so the memory wold grow with episode length.",Structuring,Structuring.Heading,,
+3240,I could see this being an issue when episode length is too long.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3241,In this paper the authors introduce a new technique for softmax inference.,Structuring,Structuring.Summary,,
+3242,"In a multiclass setting, the idea is to take the output of a NN and turn it into a gating function to choose one expert.",Structuring,Structuring.Summary,,
+3243,"Then, given the expert, output a particular category.",Structuring,Structuring.Summary,,
+3244,The first level of sparsity comes from the first expert.,Structuring,Structuring.Summary,,
+3245,The second level of sparsity comes from every expert only outputting a limited set of output categories.,Structuring,Structuring.Summary,,
+3246,"The paper is easy to understand but several sections (starting from section 2) could use an english language review (e.g. ""search right"" -> ""search for the right"", ""predict next word"" -> ""predict the next word"", ...) In section 3, can you be more specific about the gains in training versus inference time?",Request,Request.EditExplanation,N-Negative,Replicability|Clarity
+3247,I believe the results all relate to inference but it would be good to get an overview of the impact of training time as well.,Request,Request.Explanation,N-Negative,Substance
+3248,You motivate some of the work by the fact that the experts have overlapping outputs.,Fact,Fact,,
+3249,Maybe in section 3.7 you can address how often that occurs as well?,Request,Request.Edit,N-Negative,Substance
+3250,Nits:,Structuring,Structuring.Heading,,
+3251,- it wasn't clear how the sparsity percentage on page 3 was defined?,Request,Request.Explanation,N-Negative,Replicability
+3252,- can you motivate why you are not using perplexity in section 3.2?,Request,Request.Explanation,N-Negative,Soundness/Correctness
+3253,[EDIT]: I have updated my score after the author response and paper revision.,Social,Social,,
+3254,=============================,Structuring,Structuring.Heading,,
+3255,[I was asked to step in as a reviewer last minute. I did not look at the other reviews].,Social,Social,,
+3256,-------------------------------,Structuring,Structuring.Heading,,
+3259,This paper proposes to learn disentangled latent states under the GAN framework.,Structuring,Structuring.Summary,,
+3260,"The core idea is to partition the latent states into N partitions, and correspondly have N Siamese networks that pull the generated images with the same latent partition towards each other, along with a contrastive loss which ensures generated images with different latent partitions to be different.",Structuring,Structuring.Summary,,
+3261,"The authors experiment with two setups: in the ""unguided setup"" training is completely unsupervised, while in the ""guided"" setup, there is some weak supervision to encourage different partitions to learn different factors.",Structuring,Structuring.Summary,,
+3263,Evaluation,Structuring,Structuring.Heading,,
+3265,"While the motivation is nice, I find the results (especially in the unguided setup) underwhelming.",Evaluative,Evaluative,N-Negative,Substance
+3266,"This does not seem surprising to me, as in the unguided case, the constrative loss seems not strong enough to encourage the latent partitions to be different.",Evaluative,Evaluative,N-Negative,Substance
+3267,Results with weak supervision (their method for injecting weak supervision was very nice),Evaluative,Evaluative,N-Negative,Substance
+3268,are more impressive.,,,,
+3269,"However, there is no comparison against existing work.",Evaluative,Evaluative,N-Negative,Meaningful Comparison
+3270,Learning disentangled representations with deep generative models is very much an active area.,Fact,Fact,,
+3271,Here are some recent papers:,Fact,Fact,,
+3272,https://openreview.net/references/pdf?id=Sy2fzU9gl,,,,
+3273,https://arxiv.org/abs/1802.05822,,,,
+3274,https://arxiv.org/abs/1802.05983,,,,
+3275,https://arxiv.org/abs/1802.04942,,,,
+3276,"Importantly, there are no quantitative metrics.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3277,I do not think this work is ready for publication.,Evaluative,Evaluative,N-Negative,Substance
+3278,The paper propose to incorporate an additional class for adversarial and out-distribution samples in CNNs.,Structuring,Structuring.Summary,,
+3279,"The paper propose to incorporate natural out-distribution images and interpolated images to the additional class, but the problem of selecting the out-distribution images is itself an important problem.",Structuring,Structuring.Summary,,
+3280,"The paper presents a very simple approaches for selecting the out-distribution images that relies on many hidden assumptions on the images source or the base classier, and the interpolation mechanism is also too simple and there is the implicit assumption of low complexity images.",Structuring,Structuring.Summary,,
+3281,There exists more principled approaches for selecting out-distribution images that has not considered here like those based on uncertainty estimation or recently proposed direct out-distribution detectors.,Evaluative,Evaluative,N-Negative,Originality
+3282,"In summary, the quality of the paper is poor and the originality of the work is low.",Evaluative,Evaluative,N-Negative,Originality
+3283,The paper is easily readable.,Evaluative,Evaluative,P-Positive,Clarity
+3284,# Summary,Structuring,Structuring.Summary,,
+3285,"This paper proposes a new kind of spherical convolution for use in spherical CNNs, and evaluates it on rigid and non-rigid 3D shape recognition and retrieval problems.",Structuring,Structuring.Summary,,
+3286,Previous work has either used general anisotropic convolution or azimuthally isotropic convolution.,Structuring,Structuring.Summary,,
+3287,"The former produces feature maps on SO(3), which is deemed undesirable because processing 3-dimensional feature maps is costly.",Structuring,Structuring.Summary,,
+3288,"The latter produces feature maps on the sphere, but requires that filters be circularly symmetric / azimuthally isotropic, which limits modeling capacity.",Structuring,Structuring.Summary,,
+3289,This paper proposes an anisotropic spherical convolution that produces 2D spherical feature maps.,Structuring,Structuring.Summary,,
+3290,"The paper also introduces an efficient way of processing geodesic / icosahedral spherical grids, avoiding complicated spectral algorithms.",Structuring,Structuring.Summary,,
+3291,# Strengths,Evaluative,Evaluative,P-Positive,Substance
+3292,The paper has several strong points.,Evaluative,Evaluative,P-Positive,Substance
+3293,"It is well written, clearly structured, and the mathematics is clear and precise while avoiding unnecessary complexity.",Evaluative,Evaluative,P-Positive,Clarity
+3294,"Much of the relevant related work is discussed, and this is done in a balanced way.",Evaluative,Evaluative,P-Positive,Meaningful Comparison
+3295,"Although it is not directly measured, it does seem highly likely that the alt-az convolution is more computationally efficient than SO(3) convolution, and more expressive than isotropic S2 convolution.",Evaluative,Evaluative,P-Positive,Meaningful Comparison
+3296,"The most important contribution in my opinion is the efficient data structure presented in section 4, which allows the spherical convolution to be computed efficiently on GPUs for a grid that is much more homogeneous than the lat/lon grids used in previous works (which have very high resolution near the poles, and low resolution at the equator).",Evaluative,Evaluative,P-Positive,Substance
+3297,"The idea of carving up the icosahedral grid in just the right way, so that the spherical convolution can be computed as a planar convolution with funny boundary conditions, is very clever, elegant, and practical.",Evaluative,Evaluative,P-Positive,Clarity|Originality
+3298,# Weaknesses,Structuring,Structuring.Heading,,
+3299,There is however a misunderstanding about the properties of the alt-az convolution that must be cleared up before this paper can be published.,Evaluative,Evaluative,N-Negative,Substance
+3300,"To start with, the set of rotations R(phi, nu, 0) called the alt-az group in this paper is not a group in the mathematical sense.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3301,"This easy to see, because a composition of rotations of the form Rz(phi) Ry(nu) is not generally of that form.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3302,"For instance we can multiply Rz(phi) Ry(nu) by the element Rz(omega)Ry(0) = Rz(omega), which gives the element Rz(phi) Ry(nu) Rz(omega).",Fact,Fact,,
+3303,"As noted in the paper, this is a general element of SO(3) (and hence not in the set of alt-az rotations)",Evaluative,Evaluative,N-Negative,Substance
+3305,So the closure axiom of a group is violated.,Evaluative,Evaluative,N-Negative,Substance
+3306,"This matters, because the notion of equivariance really only makes sense for a group.",Evaluative,Evaluative,N-Negative,Substance
+3307,"If a layer l satisfies l R = R l  (for R a alt-az rotation), then it automatically satisfies l RR' = RR' l, which means l is equivariant to the whole group generated by the set of alt-az rotations.",Fact,Fact,,
+3308,"As we saw before, this is the whole rotation group.",Other,Other,,
+3309,"This would mean that the layer is actually SO(3)-equivariant, but it has been proven [1], that any rotation equivariant layer between scalar spherical feature maps can be expressed as an azimuthally isotropic convolution.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3310,"Since the alt-az convolution is not isotropic and maps between scalars on S2, it cannot be equivariant.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3311,"This also becomes apparent in the experiments section, where rotational data augmentation is found to be necessary.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3312,"The paper does not contain an attempted proof of equivariance, and if one tries to give one, the impossibility of doing so will become apparent.",Evaluative,Evaluative,N-Negative,Substance
+3313,I note that the alt-az convolution *is* equivariant to rotations in the subgroup SO(2) of rotations around the Z-axis.,Evaluative,Evaluative,N-Negative,Substance
+3314,Another somewhat jarring fact about the alt-az convolution is that it is not well defined on the south pole.,Evaluative,Evaluative,N-Negative,Clarity
+3315,"The south pole can be represented by any pair of coordinates of the form phi in [0, 2pi], nu = +/- pi.",Fact,Fact,,
+3316,"But it is easy to see that eq. 10 will give different results for each of these coordinates, because they correspond to different rotations of the filter about the Z-axis.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3317,"This is ultimately due to the fact that the set of alt-az rotations is not the same as the set of points on the sphere, topologically speaking.",Evaluative,Evaluative,N-Negative,Substance
+3318,The set of points on the sphere can only be viewed as the quotient SO(3)/S(2).,Evaluative,Evaluative,N-Negative,Other
+3319,"The paragraph motivating the alt-az convolution on page 4 is not very clear, and some claims are questionable.",Evaluative,Evaluative,N-Negative,Clarity
+3320,"I agree that local SO(2) invariance is too limiting. But it is not true that rotating filters is not effective in planar/volumetric CNNs, as shown by many recent papers on equivariant networks.",Evaluative,Evaluative,N-Negative,Clarity
+3321,"I would suggest rewriting this paragraph to make it clearer and less speculative, and acknowledge that although rotating filters might increase computational complexity, it has often been shown very effective.",Request,Request.Edit,N-Negative,Clarity
+3322,# Other comments,Structuring,Structuring.Summary,,
+3323,The experiments show that the method is quite effective.,Evaluative,Evaluative,P-Positive,Substance
+3324,"For instance, the SHREC17 results are on par with Cohen et al. and Esteves et al., presumably at a significantly reduced computational cost.",Evaluative,Evaluative,P-Positive,Meaningful Comparison
+3325,That they do not substantially outperform these and other methods,Evaluative,Evaluative,P-Positive,Meaningful Comparison
+3326,"is likely due to the input representation, which is lossy, leading to a maximal performance shared by all three methods.",Evaluative,Evaluative,P-Positive,Meaningful Comparison
+3327,"An application to omnidirectional vision might more clearly show the strength of the method, but this would be a lot of work so I do not expect the authors to do that for this paper.",Evaluative,Evaluative,P-Positive,Motivation/Impact
+3328,"It would be nice to see a more direct comparison between the three definitions of spherical convolution (general SO3, isotropic S2, and anisotropic S2).",Evaluative,Evaluative,P-Positive,Motivation/Impact
+3329,"Right now, the numbers reported in Cohen et al. and Esteves et al. are copied over, but there are probably many differences between the precise setup and architectures used in these papers.",Evaluative,Evaluative,P-Positive,Substance
+3330,"It would be interesting to see what happens if one uses the same architecture on a number of problems, changing only the convolution in each case.",Evaluative,Evaluative,P-Positive,Meaningful Comparison
+3331,"Initially, I was a bit puzzled about why SO(3) augmentation seems to reduce accuracy in table 1.",Evaluative,Evaluative,U-Neutral,Clarity
+3332,I think this is because SO(3) augmentation actually makes the classification problem harder if the input is initially aligned.,Fact,Fact,,
+3333,Some more explanation / discussion would be good.,Request,Request.Explanation,P-Positive,Clarity
+3334,It would be nice to explain the spherical parameterization in more detail. Is this operation itself rotation equivariant?,Request,Request.Explanation,P-Positive,Substance
+3335,Typos & minor issues,Structuring,Structuring.Heading,,
+3336,"- Abstract: ""to extract non-trivial features"".",Request,Request.Edit,U-Neutral,Other
+3337,The word non-trivial really doesn't add anything here.,Request,Request.Edit,U-Neutral,Other
+3338,"Similarly ""offers multi-level feature extraction capabilities"" is almost meaningless since all DL methods can be said to do so.",Request,Request.Edit,U-Neutral,Other
+3339,"- Below eq. 5, D_R^{-1} should equal D_R(-omega, -nu, -phi).",Request,Request.Edit,U-Neutral,Other
+3340,The order is reversed when inverting.,Request,Request.Edit,U-Neutral,Other
+3341,"- ""Different notations of convolutions"" -> notions",Request,Request.Typo,U-Neutral,Other
+3342,"- ""For spherical functions there is no consistent and well defined convolution operators."" As discussed above, the issue is quite a bit more subtle. There are exactly two well-defined convolution operators, but they have some characteristics deemed undesirable by the authors.",Request,Request.Edit,U-Neutral,Clarity
+3343,"- ""rationally symmetric"" -> rotationally",Request,Request.Typo,U-Neutral,Other
+3344,"- ""exact hierarchical spherical patterns"" -> extract",Request,Request.Typo,U-Neutral,Other
+3345,- It seems quite likely that the unpacking of the icosahedral/hexagonal grid as done in this paper has been studied before in other fields.,Request,Request.Edit,U-Neutral,Originality
+3346,"References would be in order. Similarly, hexagonal convolution has a history in DL and outside.",Request,Request.Edit,U-Neutral,Other
+3347,"- Bottom of page 7, capitalize ""for"".",Request,Request.Typo,U-Neutral,Other
+3348,"- ""principle curvatures"" -> principal.",Request,Request.Typo,U-Neutral,Other
+3349,"- ""deferent augmentation modes"" -> different",Request,Request.Typo,U-Neutral,Other
+3350,"- ""inspite"" -> in spite",Request,Request.Typo,U-Neutral,Other
+3351,"- ""reprort"" -> report",Request,Request.Typo,U-Neutral,Other
+3352,"- ""utlize"" -> utilize",Request,Request.Typo,U-Neutral,Other
+3353,"- ""computer the convolution"" -> compute",Request,Request.Typo,U-Neutral,Other
+3354,# Conclusion,Structuring,Structuring.Heading,,
+3355,"Although the alt-az convolution lacks the mathematical elegance of the general anisotropic and azimuthally isotropic spherical convolutions, it still seems like a practically useful operation for some kinds of data, particularly when implemented using the homogeneous icosahedral/hexagonal grid and fast algorithm presented in this paper.",Structuring,Structuring.Summary,,
+3356,"Hence, I would wholeheartedly recommend acceptance of this paper if the authors correct the factual errors (e.g. the claim of SO(3)-equivariance) and provide a clear discussion of the issues.",Other,Other,,
+3357,For now I will give an intermediate rating to the paper.,Other,Other,,
+3358,"[1] Kondor, Trivedi, ""On the Generalization of Equivariance and Convolution in Neural Networks to the Action of Compact Groups""",Other,Other,,
+3360,Applications are a bit unclear.,Evaluative,Evaluative,N-Negative,Motivation/Impact|Clarity
+3361,It would be nice to see a better case made for spherical convolutions within the experimental section.,Request,Request.Experiment,N-Negative,Substance
+3362,The experiments on SHREC17 show all three spherical methods under-performing other approaches.,Evaluative,Evaluative,N-Negative,Substance
+3363,It leaves it unclear to the reader when someone should choose to utilize a spherical method or when the proposed method would then be preferred compared to other spherical methods.,Evaluative,Evaluative,N-Negative,Clarity
+3364,Is there a task that this representation significantly outperforms other spherical methods and non-spherical methods?,Evaluative,Evaluative,U-Neutral,Substance
+3365,Or a specific useful application where spherical methods in general outperform other approaches?,Evaluative,Evaluative,U-Neutral,Substance
+3366,# Strengths:,Structuring,Structuring.Heading,,
+3367,The method is well developed and explained.,Evaluative,Evaluative,P-Positive,Clarity|Substance
+3368,Ability to implement in a straight-forward manner on GPU.,Evaluative,Evaluative,P-Positive,Substance
+3414,"The paper builds upon Deep Image Prior (DIP) - work which shows that one can optimize a neural generator to fit a single image without learning on any dataset, and the output of the generator (which approximates the image) can be used for denoising / super resolution / etc.",Structuring,Structuring.Summary,,
+3415,"The paper proposes a new architecture for the DIP method which has much less parameters, but works on par with DIP.",Structuring,Structuring.Summary,,
+3416,Another contribution of the paper is theoretical treatment of (a simplified version of) the proposed architecture showing that it can’t fit random noise (and thus maybe better suited for denoising).,Structuring,Structuring.Summary,,
+3417,"The paper is clearly written, and the proposed architecture has too cool properties: it’s compact enough to be used for image compression; and it doesn’t overfit thus making early stopping notnesesary (which was crucial for the original DIP model).",Evaluative,Evaluative,P-Positive,Originality
+3418,I have two main concerns about this paper.,Structuring,Structuring.Heading,,
+3419,"First, it is somewhat misleading about its contributions: it's not obvious from abstract/introduction that the whole model is the same as DIP except for the proposed architecture.",Evaluative,Evaluative,N-Negative,Clarity
+3420,"Specifically, the first contribution listed in the introduction makes it look like this paper introduces the idea of not learning the decoder on the dataset (the one that starts with “The network is not learned and itself incorporates all assumptions on the data.”).",Evaluative,Evaluative,N-Negative,Clarity
+3421,My second concern is about the theoretical contribution.,Structuring,Structuring.Heading,,
+3422,"On the one hand, I enjoyed the angle the authors tackled proving that the network architecture is underparameterized enough to be a good model for denoising.",Evaluative,Evaluative,P-Positive,Substance
+3423,"On the other hand, the obtained results are very weak: only one layered version of the paper is analysed and the theorem applies only to networks with less than some threshold of parameters.",Evaluative,Evaluative,N-Negative,Substance
+3424,"Roughly, the theorem states that if for example we fix any matrix B of size e.g. 256 x k and matrix U of size 512 x 256 and then compute U relu(B C) where C is the vector of parameters of size k x 1, AND if k < 2.5 (i.e. if we use at most 2 parameters), then it would be very hard to fit 512 iid gaussian values (i.e. min_C ||U relu(B C) - eta|| where eta ~ N(0, 1)).",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3425,"This restriction of the number of parameters to be small is only mentioned in the theorem itself, not in the discussion of its implications.",Evaluative,Evaluative,N-Negative,Substance
+3426,"Also, the theorem only applies to the iid noise, while most natural noise patterns have structure (e.g. JPEG artifacts, broken pixels, etc) and thus can probably be better approximated with deep models.",Fact,Fact,,
+3427,"Since the paper manages to use very few parameters (BTW, how many parameters in total do you have? Can you please add this number to the text?), it would be cool to see if second order methods like LBFGS can be applied here.",Request,Request.Clarification,U-Neutral,Substance
+3428,Some less important points:,Structuring,Structuring.Heading,,
+3429,Fig 4 is very confusing.,Evaluative,Evaluative,N-Negative,Clarity
+3430,"First, it doesn’t label the X axis.",Request,Request.Edit,N-Negative,Clarity
+3431,"Second, the caption mentions that early stopping is beneficial for the proposed method, but I can’t see it from the figure.",Request,Request.Edit,N-Negative,Clarity
+3432,"Third, I don’t get what is plotted on different subplots.",Request,Request.Edit,N-Negative,Clarity
+3433,"The text mentions that (a) is fitting the noisy image, (b) is fitting the noiseless image, and (c) is fitting noise. Is it all done independently with three different models?",Request,Request.Clarification,U-Neutral,Clarity
+3434,"Then why does the figure says test and train loss? And why DIP loss goes up, it should be able to fit anything, right? If not and it’s a single model that gets fitted on the noisy image and tested on the noiseless image, then how can you estimate the level of noise fitting? ||G(C) - eta|| should be high if G(C) ~= x.",Request,Request.Edit,U-Neutral,Clarity
+3435,"Also, in this quote “In Fig. 4(a) we plot the Mean Squared Error (MSE) over the number of iterations of the optimizer for fitting the noisy astronaut image x + η (i.e., FORMULA ...” the formula doesn’t correspond to the text.",Request,Request.Clarification,U-Neutral,Clarity
+3436,"And finally, the discussion of this figure makes claims about the behaviour of the model that seems to be too strong to be based on a single image experiment.",Evaluative,Evaluative,N-Negative,Substance
+3437,I don’t get the details of the batch normalization used: with respect to which axis the mean and variance are computed?,Request,Request.Clarification,U-Neutral,Clarity
+3438,The authors claim that the model is not convolutional.,Fact,Fact,,
+3439,"But first, it’s not obvious why this would be a good thing (or a bad thing for that matter)",Request,Request.Edit,U-Neutral,Substance
+3441,"Second, it’s not exactly correct (as noted in the paper itself): the architecture uses 1x1 convolutions and upsampling, which combined give a weak and underparametrized analog of convolutions.",Evaluative,Evaluative,U-Neutral,Substance
+3442,"> The deep decoder is a deep image model G: R N → R n, where N is the number of parameters of the model, and n is the output dimension, which is typically much larger than the number of parameters (N << n).",Fact,Fact,,
+3443,"I think it should be vice versa, N >> n",Request,Request.Typo,U-Neutral,Other
+3444,The following footnote,Structuring,Structuring.Heading,,
+3445,"> Specifically, we took a deep decoder G with d = 6 layers and output dimension 512×512×3, and choose k = 64 and k = 128 for the respective compression ratios.",Fact,Fact,,
+3446,Uses unintroduced (at that point) notation and is very confusing.,Evaluative,Evaluative,N-Negative,Clarity
+3447,"It would be nice to have a version of Figure 6 with k = 6, so that one can see all feature maps (in contrast to a subset of them).",Request,Request.Edit,U-Neutral,Clarity
+3448,"I’m also wondering, is it harder to optimize the proposed architecture compared to DIP?",Request,Request.Clarification,U-Neutral,Substance
+3449,The literature on distillation indicates that overparameterization can be beneficial for convergence and final performance.,Fact,Fact,,
+3450,The authors of this paper are proposing a neural network approach for learning diffusion dynamics in networks.,Structuring,Structuring.Summary,,
+3451,The authors argue that the main advantage of their framework is that it incorporates the structure of independent cascades into the model which predicts the diffusion process.,Structuring,Structuring.Summary,,
+3452,The primary difficulty in reviewing this paper is the poor presentation of the paper.,Evaluative,Evaluative,N-Negative,Clarity
+3453,"There are many typos and mistakes (e.g., the last paragraph of the paper starts with a sentence that does not make any sense), missing references (e.g., there is an empty parenthesis at the end of the second paragraph on the second page) and in at least two cases, there are references to a formula that is not in the manuscript (e.g., reference to formula 15 on line 3 of page 5).",Evaluative,Evaluative,N-Negative,Clarity
+3454,This issues makes reviewing this paper very difficult.,Evaluative,Evaluative,N-Negative,Clarity
+3455,"In the modeling section, authors use p(I|D) as q^D(.) in the Eq. 12, where p(I|D) is the conditional probability that a particular node infected an observed infected node first.",Structuring,Structuring.Quote,,
+3456,"Plugging p(I|D) in Eq. 12 and using decomposition of p(D ,I) used in Eq. 10, we arrive at a formulation which drops all p(I|D) terms.",Structuring,Structuring.Quote,,
+3457,"This results in an objective function which only involves infected nodes (and no term associated with the parent node), weighted by likelihood of each node j infecting the node at step i. This should make the training more simplified than what is discussed in Algorithm 2.",Fact,Fact,,
+3458,"Beyond this simplification, I am not clear if that is actually intended by the authors.",Request,Request.Clarification,N-Negative,Substance
+3459,The experiments demonstrate a superior performance of the proposed model compared to alternative benchmarks.,Structuring,Structuring.Quote,,
+3460,The authors explain how they trained their own model but there is no mention on how they trained benchmark models.,Request,Request.Clarification,N-Negative,Substance
+3461,"However, given that the datasets used in the experiments were not used in the associated benchmark papers, it is necessary for authors to explain how they trained competing models.",Request,Request.Explanation,N-Negative,Substance
+3462,"Due to several shortcomings of the paper, most important of which is on presentation of the paper, this manuscript requires a significant revision by the authors to reach the necessary standards for publication, moreover it would be helpful to clarify the modeling choices and consequences of these choices more clearly.",Evaluative,Evaluative,N-Negative,Motivation/Impact
+3463,"The paper deals with further development of RAND-WALK model of Arora et al. There are stable idioms, adjective-noun pairs and etc that are not covered by RAND-WALK, because sometimes words from seemingly different contexts can join to form a stable idiom.",Structuring,Structuring.Summary,,
+3464,"So, the idea of paper is to introduce a tensor T and a stable idiom (a,b) is embedded into v_{ab}=v_a+v_b+T(v_a, v_b,.) and is emitted with some probability p_sym (proportional to exp(v_{ab} times context)).",Structuring,Structuring.Summary,,
+3465,"The latter model is similar to RAND-WALK, so it is not surprising that statistical functions there are similarly concentrated.",Structuring,Structuring.Summary,,
+3466,"Finally, there exists an expression, PMI3(u,v,w), that shows the correlation between 3 words, and that can be estimated from the data directly.",Structuring,Structuring.Summary,,
+3467,"It is proved that Tucker decomposition of that tensor gives us all words embeddings together with tensor T. Thus, from the latter we will obtain a tool for finding embeddings of idioms (i.e. v_a+v_b+T(v_a, v_b,.)).",Structuring,Structuring.Summary,,
+3468,"Theoretical analysis seems correct (I have not checked all the statements thoroughly, but I would expect formulations to be true).",Evaluative,Evaluative,P-Positive,Soundness/Correctness
+3469,The only problem I see is that phrase similarity part is not convincing.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3470,"I cannot understand from that part whether T(v_a, v_b,.) addition to v_a+v_b gives any improvement or not.",Evaluative,Evaluative,N-Negative,Replicability
+3471,The idea is nice.,Evaluative,Evaluative,P-Positive,Originality
+3472,It is well aligned with tools that are needed to understand neural networks.,Evaluative,Evaluative,P-Positive,Motivation/Impact
+3473,"However, the experiments feel like they are missing motivation as to why this method is being used.",Evaluative,Evaluative,N-Negative,Substance
+3474,The paper does not provide very significant evidence that this method is useful.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3475,The negation example is nice but this doesn't seem to display the potential power of the method to understand a neural network.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3476,More motivation for experimental section is needed.,Request,Request.Explanation,U-Neutral,Motivation/Impact
+3477,If the authors don't discuss a motivation then how will a reader know how to apply the tool?,Evaluative,Evaluative,N-Negative,Motivation/Impact
+3478,It seems there is no conclusion to take away from the experiments in section 5 (convolutions).,Evaluative,Evaluative,N-Negative,Clarity
+3479,The authors should rethink the structure of the experimental section from the standpoint of convincing someone to use this method.,Request,Request.Edit,U-Neutral,Clarity
+3480,In section 4.1 the authors have a good discussion on what is wrong with other methods in order to motivate their approach but then they don't deliver significant evidence in the later part of the section.,Request,Request.Explanation,N-Negative,Substance
+3481,The paper needs more discussion and experiments to explain how and why to use this approach.,Request,Request.Explanation,U-Neutral,Substance
+3482,"While the authors say ""attributing a deep network’s prediction to its input is well-studied"" they don't compare directly against these methods.",Evaluative,Evaluative,N-Negative,Meaningful Comparison
+3483,There are many typos and grammar errors,Request,Request.Typo,N-Negative,Clarity
+3484,While I think the paper could be much more impactful if the experimental section was greatly reworked; I believe the first 5 pages of the paper are a very good contribution and it should be accepted.,Evaluative,Evaluative,P-Positive,Other
+3485,"The paper considers an actor-critic scheme for multiagent RL, where the critic is specific to each agent and has access to all other agents' embedded observations.",Structuring,Structuring.Summary,,
+3486,The main idea is to use an attention mechanism in the critic that learns to selectively scale the contributions of the other agents.,Structuring,Structuring.Summary,,
+3487,"The paper presents sufficient motivation and background, and the proposed algorithmic implementation seems reasonable.",Evaluative,Evaluative,P-Positive,Motivation/Impact|Soundness/Correctness
+3488,"The proposed scheme is compared to two recent algorithms for centralized training of decentralized policies, and shows comparable or better results on two synthetic multiagent problems.",Evaluative,Evaluative,P-Positive,Meaningful Comparison
+3489,I believe that the idea and approach of the paper are interesting and contribute to the multiagent learning literature.,Evaluative,Evaluative,P-Positive,Motivation/Impact
+3490,Regarding cons:,Structuring,Structuring.Heading,,
+3491,"- The critical structural choices (such as the attention model in section 3.2) are presented without too much justification, discussion of alternatives, etc.",Evaluative,Evaluative,N-Negative,Motivation/Impact
+3492,"- The experiments show the learning results, but do not provide a peak ""under the hood"" to understand the way attention evolved and contributed to the results.",Evaluative,Evaluative,N-Negative,Substance
+3493,"- The experiments show good results compared to existing algorithms, but not impressively so.",Evaluative,Evaluative,U-Neutral,Substance
+3494,The problem that the paper tackles is very important and the approach to tackle it id appealing.,Structuring,Structuring.Summary,,
+3495,The idea of regarding the history as a tree looks very promising.,Structuring,Structuring.Summary,,
+3496,"However, it’s noteworthy that embedding to a vector could be useful too if the embedding espace is representative of the entire history and the timing of the events.",Evaluative,Evaluative,N-Negative,Meaningful Comparison
+3497,Using neural network if an interesting choice for capturing the influence probability and its timing.,Evaluative,Evaluative,P-Positive,Originality
+3498,The authors need to be clear about their contribution. Is the paper only about replacing the traditional parametric functions of influence and probability with  deep neural networks?,Request,Request.Clarification,U-Neutral,Motivation/Impact
+3499,The experimental sections look rather mechanical. I would have put some results on the learned embedding. Or some demonstration of the embedded history or probability to intuitively convey the idea and how it works.,Request,Request.Experiment,N-Negative,Meaningful Comparison
+3500,This could have made the paper much stronger.,Evaluative,Evaluative,N-Negative,Motivation/Impact
+3501,It was nice that the paper iterated and reviewed the possible inference and learning ways.,Evaluative,Evaluative,P-Positive,Soundness/Correctness
+3502,There is one more way.,Structuring,Structuring.Heading,,
+3503,Similar to [1] one can use MCMC with importance sampling on auxiliary variables to infer the hidden diffusion given the observed cascades in continuous-time independent cascade model.,Evaluative,Evaluative,P-Positive,Substance
+3504,The paper can benefit from a proofreading.,Evaluative,Evaluative,N-Negative,Clarity
+3505,There are a few typos throughout the paper such as:,Evaluative,Evaluative,N-Negative,Clarity
+3506,Reference is missing in section 2.1,,,,
+3507,Page 2 paragraph 1: “an neural attention mechanism”,,,,
+3508,"[1] Back to the Past: Source Identification in Diffusion Networks from Partially Observed Cascades, AISTATS 2015",,,,
+3509,The authors consider the use of tensor approximations to more accurately capture syntactical aspects of compositionality for word embeddings.,Structuring,Structuring.Summary,,
+3510,"Given two words a and b, when your goal is to find a word whose meaning is roughly that of the phrase (a,b)",Structuring,Structuring.Summary,,
+3511,", a standard approach to to find the word whose embedding is close to the sum of the embeddings, a + b. The authors point out that others have observed that this form of compositionality does not leverage any information on the syntax of the pair (a,b), and the propose using a tensor contraction to model an additional multiplicative interaction between a and b, so they propose finding the word whose embedding is closest to a + b + T*a*b, where T is a tensor, and T*a*b denotes the vector obtained by contracting a and b with T. They test this idea specifically on the use-case where (a,b) is an adjective,noun pair, and show that their form of compositionality outperforms weighted versions of additive compositionality in terms of spearman and pearson correlation with human judgements.",,,,
+3512,"In their model, the word embeddings are learned separately, then the tensor T is learned by minimizing an objective whose goal is to minimize the error in predicting observed trigram statistics.",Structuring,Structuring.Summary,,
+3513,The specific objective comes from a nontrivial tensorial extension of the original matricial RAND-WALK model for learning word embeddings.,Structuring,Structuring.Summary,,
+3514,"The topic is fitting with ICLR, and some attendees will find the results interesting.",Evaluative,Evaluative,P-Positive,Originality
+3515,"As in the original RAND-WALK paper, the theory is interesting, but not the main attraction, as it relies on strong generative modeling assumptions that essentially bake in the desired results.",Fact,Fact,,
+3516,"The main appeal is the idea of using T to model syntactic interactions, and the algorithm for learning T. Given that the main attraction of the paper is the potential for more performant word embeddings, I do not believe the work will have wide appeal to ICLR attendees, because no evidence is provided that the features from the learned tensor, say [a, b, T*a*b], are more useful in downstream applications than [a,b] (one experiment in sentiment analysis is tried in the supplementary material with no compelling difference shown).",Evaluative,Evaluative,N-Negative,Substance
+3518,- theoretical justification is given for their assumption that the higher-order interactions can be modeled by a tensor,Evaluative,Evaluative,P-Positive,Substance
+3519,- the tensor model does deliver some improvement over linear composition on noun-adjective pairs when measured against human judgement,Evaluative,Evaluative,P-Positive,Originality
+3521,- no downstream applications are given which show that these higher order interactions can be useful for downstream tasks.,Evaluative,Evaluative,N-Negative,Substance
+3522,"- the higher-order features T*a*b are useful only when a is noun and b is an adjective: why not investigate using T to model higher-order interaction for all (a,b) pairs regardless of the syntactic relationships between a and b?",Evaluative,Evaluative,N-Negative,Replicability
+3523,"- comparison should be made to the linear composition method in the Arora, Liang, Ma ICLR 2017 paper",Evaluative,Evaluative,N-Negative,Meaningful Comparison
+3524,Some additional citations:,Structuring,Structuring.Heading,,
+3525,- the above-mentioned ICLR paper provides a performant alternative to unweighted linear composition,Fact,Fact,,
+3526,"- the 2017 Gittens, Achlioptas, Drineas ACL paper provides theory on the linear composition of some word embeddings",Fact,Fact,,
+3527,The authors suggest a method to create combined low-dimensional representations for combinations of pairs of words which have a specific syntactic relationship (e.g. adjective - noun).,Structuring,Structuring.Summary,,
+3528,"Building on the generative word embedding model provided by Arora et al. (2015), their solution uses the core tensor from the Tucker decomposition of a 3-way PMI tensor to generate an additive term, used in the composition of two word embedding vectors.",Structuring,Structuring.Summary,,
+3529,"Although the method the authors suggest is a plausible way to explicitly model the relationship between syntactic pairs and to create a combined embedding for them, their presentation does not make this obvious and it takes effort to reach the conclusion above.",Evaluative,Evaluative,N-Negative,Clarity
+3530,"Unlike Arora's original work, the assumptions they make on their subject material are not supported enough, as in their lack of explanation of why linear addition of two word embeddings should be a bad idea for composition of the embedding vectors of two syntactically related words, and why the corrective term produced by their method makes this a good idea.",Request,Request.Explanation,N-Negative,Clarity|Substance
+3531,"Though the title promises a contribution to an understanding of word embedding compositions in general, they barely expound on the broader implications of their idea in representing elements of language through vectors.",Request,Request.Edit,N-Negative,Soundness/Correctness
+3532,Their lack of willingness to ground their claims or decisions is even more apparent in two other cases.,Evaluative,Evaluative,N-Negative,Other
+3533,The authors claim that the Arora's RAND-WALK model does not capture any syntactic information.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3534,This is not true.,,,,
+3535,"The results presented by Arora et al. indeed show that RAND-WALK captures syntactic information, albeit to a lesser extent than other popular methods for word embedding (Table 1, Arora et al. 2015).",Fact,Fact,,
+3536,Another unjustified choice by the authors is their choice of weighing the Tensor term (when it is being added to two base embedding vectors) in the phrase similarity experiment.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3537,The reason the authors provide for weighing the composition Tensor is the fact that in the unweighted version their model produced a worse performance than the additive composition.,Evaluative,Evaluative,U-Neutral,Motivation/Impact
+3538,One would at least expect an after-the-fact interpretation for the weighted tensor term and what this implies with regard to their method and syntactic embedding compositions in general.,Request,Request.Edit,N-Negative,Substance
+3539,"Arora's generative model for word embeddings, on which the current paper is largely based upon, not only make the mathematical relationship among different popular word embedding methods explicit, but also by making and verifying explicit assumptions with regard to properties of the word embeddings created by their model, they are able to explain why low-dimensional embeddings provide superior performance in tasks that implicate semantic relationships as linear algebraic relations.",Fact,Fact,,
+3540,"Present work, however interesting with regard to its potential implications, strays away from providing such theoretical insights and suffices with demonstrating limited improvements in empirical tasks.",Evaluative,Evaluative,N-Negative,Substance|Soundness/Correctness
+3541,The paper examines an architectural feature in GAN generators -- self-modulation -- and presents empirical evidence supporting the claim that it helps improve modeling performance.,Fact,Fact,,
+3542,The self-modulation mechanism itself is implemented via FiLM layers applied to all convolutional blocks in the generator and whose scaling and shifting parameters are predicted as a function of the noise vector z.,Fact,Fact,,
+3543,"Performance is measured in terms of Fréchet Inception Distance (FID) for models trained with and without self-modulation on a fairly comprehensive range of model architectures (DCGAN-based, ResNet-based), discriminator regularization techniques (gradient penalty, spectral normalization), and datasets (CIFAR10, CelebA-HQ, LSUN-Bedroom, ImageNet).",Fact,Fact,,
+3544,The takeaway is that self-modulation is an architectural feature that helps improve modeling performance by a significant margin in most settings.,Fact,Fact,,
+3545,"An ablation study is also performed on the location where self-modulation is applied, showing that it is beneficial across all locations but has more impact towards the later layers of the generator.",Fact,Fact,,
+3546,"I am overall positive about the paper: the proposed idea is simple, but is well-explained and backed by rigorous evaluation.",Evaluative,Evaluative,P-Positive,Substance
+3547,Here are the questions I would like the authors to discuss further:,Structuring,Structuring.Heading,,
+3548,- The proposed approach is a fairly specific form of self-modulation.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3549,"In general, I think of self-modulation as a way for the network to interact with itself, which can be a local interaction, like for squeeze-and-excitation blocks.",Fact,Fact,,
+3550,"In the case of this paper, the self-interaction allows the noise vector z to interact with various intermediate features across the generation process, which for me appears to be different than allowing intermediate features to interact with themselves.",Fact,Fact,,
+3551,"This form of noise injection at various levels of the generator is also close in spirit to what BigGAN employs, except that in the case of BigGAN different parts of the noise vector are used to influence different parts of the generator.",Fact,Fact,,
+3552,Can you clarify how you view the relationship between the approaches mentioned above?,Request,Request.Clarification,N-Negative,Soundness/Correctness
+3553,"- It’s interesting to me that the ResNet architecture performs better with self-modulation in all settings, considering that one possible explanation for why self-modulation is helpful is that it allows the “information” contained in the noise vector to better propagate to and influence different parts of the generator.",Fact,Fact,,
+3554,"ResNets also have this ability to “propagate” the noise signal more easily, but it appears that having a self-modulation mechanism on top of that is still beneficial.",Fact,Fact,,
+3555,I’m curious to hear the authors’ thoughts in this.,Request,Request.Clarification,P-Positive,Substance
+3556,"- Reading Figure 2b, one could be tempted to draw a correlation between the complexity of the dataset and the gains achieved by self-modulation over the baseline (e.g., Bedroom shows less difference between the two approaches than ImageNet). Do the authors agree with that?",Request,Request.Experiment,P-Positive,Substance
+3558,"Authors present a decentralized policy, centralized value function approach (MAAC) to multi-agent learning.",Structuring,Structuring.Summary,,
+3559,They used an attention mechanism over agent policies as an input to a central value function.,Structuring,Structuring.Summary,,
+3560,Authors compare their approach with COMA (discrete actions and counterfactual (semi-centralized) baseline) and MADDPG (also uses centralized value function and continuous actions),Structuring,Structuring.Summary,,
+3561,"MAAC is evaluated on two 2d cooperative environments, Treasure Collection and Rover Tower.",Structuring,Structuring.Summary,,
+3562,"MAAC outperforms baselines on TC, but not on RT.",Structuring,Structuring.Summary,,
+3563,"Furthermore, the different baselines perform differently: there is no method that consistently performs well.",Structuring,Structuring.Summary,,
+3564,Pro,Structuring,Structuring.Heading,,
+3565,- MAAC is a simple combination of attention and a centralized value function approach.,Evaluative,Evaluative,P-Positive,Clarity
+3566,Con,Structuring,Structuring.Heading,,
+3567,"- MAAC still requires all observations and actions of all other agents as an input to the value function, which makes this approach not scalable to settings with many agents.",Evaluative,Evaluative,N-Negative,Substance
+3568,"- The centralized nature is also semantically improbable, as the observations might be high-dimensional in nature, so exchanging these between agents becomes impractical with complex problems.",Evaluative,Evaluative,N-Negative,Substance
+3569,"- MAAC does not consistently outperform baselines, and it is not clear how the stated explanations about the difference in performance apply to other problems.",Evaluative,Evaluative,N-Negative,Substance
+3570,"- Authors do not visualize the attention (as is common in previous work involving attention in e.g., NLP).",Request,Request.Experiment,N-Negative,Substance
+3571,It is unclear how the model actually operates and uses attention during execution.,Evaluative,Evaluative,N-Negative,Clarity
+3572,Reproducibility,Structuring,Structuring.Heading,,
+3573,"- It seems straightforward to implement this method, but I encourage open-sourcing the authors' implementation.",Evaluative,Evaluative,P-Positive,Replicability
+3606,This paper provide a method to produce adversarial attack using a Frank-Wolfe inspired method.,Fact,Fact,,
+3607,I have some concerns about the motivation of this method:,Structuring,Structuring.Heading,,
+3608,- What are the motivations to use Frank-Wolfe ? Usually this algorithm is used when the constraints are to complicated to have a tractable projection (which is not the case for the L_2 and L_\infty balls) or when one wants to have sparse iterates which do not seem to be the case here.,Request,Request.Explanation,N-Negative,Soundness/Correctness
+3609,- Consequently why did not you compare simple projected gradient method ?,Request,Request.Experiment,N-Negative,Substance
+3610,(BIM) is not equivalent to the projected gradient method since the direction chosen is the sign of the gradient and not the gradient itself (the first iteration is actually equivalent because we start at the center of the box but after both methods are no longer equivalent).,Fact,Fact,,
+3611,"- There is no motivations for the use of $\lambda >1$ neither practical or theoretical since the results are only proven for $\lambda =1$ whereas the experiments are done with \lambda = 5,20 or 30.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3612,- What is the difference between the result of Theorem 4.3 and the result from (Lacoste-Julien 2016)?,Request,Request.Explanation,N-Negative,Substance
+3613,Depending on the answer to these questions I'm planning to move up or down my grade.,Social,Social,,
+3614,In the experiment there is no details on how you set the hyperparameters of CW and EAD.,Evaluative,Evaluative,N-Negative,Clarity
+3615,They use a penalized formulation instead of a constrained one.,Fact,Fact,,
+3616,Consequently the regularization hyperparameters have to be set differently.,Fact,Fact,,
+3617,The only new result seem to be Theorem 4.7 which is a natural extension to theorem 4.3 to zeroth-order methods.,Evaluative,Evaluative,N-Negative,Originality
+3618,Comment:,Structuring,Structuring.Heading,,
+3619,- in the whole paper there is $y$ which is not defined.,Evaluative,Evaluative,N-Negative,Clarity
+3620,I guess it is the $y_{tar}$ fixed in the problem formulation Sec 3.2.,Fact,Fact,,
+3621,In don't see why there is a need to work on any $y$. If it is true,Evaluative,Evaluative,N-Negative,Substance
+3622,",  case assumption 4.5 do not make any sense since $y = y_{tar}$ (we just need to note $\|\nabla f(O,y_{tar})\| = C_g$) and some notation could be simplified setting for instance $f(x,y_{tar})  = f(x)$.",Request,Request.Edit,P-Positive,Clarity
+3623,- In Theorem 4.7 an expectation on g(x_a) is missing,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3624,Minor comments:,Structuring,Structuring.Heading,,
+3625,- Sec 3.1 theta_i -> x_i,Request,Request.Edit,N-Negative,Soundness/Correctness
+3626,"- Sec 3.3 the argmin is a set, then it is LMO $\in$ argmin.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3627,===== After rebuttal ======,Structuring,Structuring.Heading,,
+3628,The authors answered some of my questions but I still think it is a borderline submission.,Evaluative,Evaluative,U-Neutral,Motivation/Impact
+3646,The idea of having a separate class for out-distribution is a very interesting idea but unfortunately previously explored.,Evaluative,Evaluative,N-Negative,Originality
+3647,"In fact, in machine learning and NLP there is the OOV class which sometimes people in computer vision also use.",Evaluative,Evaluative,N-Negative,Originality
+3648,Some of the claims in the paper can be further substantiated or explored.,Other,Other,,
+3649,For example in abstract there is a simple claim that is presented too strong: We also demonstrate that training such an augmented CNN with representative out-distribution natural datasets and some interpolated samples allows it to better handle a wide range of unseen out-distribution samples and black-box adversarial examples without training it on any adversaries.,Fact,Fact,,
+3650,This claim is bigger than just CNNs and needs to be studied in a theoretical framework not an empirical one.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3651,"Also, one simple way to stop these adversarial cases would be to explore using Sigmoid as opposed to softmax.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3652,In general it is very unlikely that you will be able to choose every variation of out-distribution cases.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3653,Much easier if you just try to solve the problem using a set of n Sigmoids (n total number of classes) and consider each output a probability distribution.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3654,"However, the studies in this paper are still valuable and I strongly recommend continuing on the same direction.",Evaluative,Evaluative,P-Positive,Motivation/Impact
+3663,This work considers a version of importance sampling of states from the replay buffer.,Structuring,Structuring.Summary,,
+3664,"Each trajectory is assigned a rank, inversely proportional to its probability according to a GMM.",Structuring,Structuring.Summary,,
+3665,The trajectories with lower rank are preferred at sampling.,Structuring,Structuring.Summary,,
+3666,Main issues:,Structuring,Structuring.Heading,,
+3667,1. Estimating rank from a density estimator,Structuring,Structuring.Heading,,
+3668,- the reasoning behind picking VGMM as the density estimator is not fully convincing and (dis)advantages of other candidate density estimators are almost not highlighted.,Evaluative,Evaluative,N-Negative,Substance
+3669,- it is unclear and possibly could be better explained why one needs to concatenate the goals (what would change if we would not concatenate but estimate state densities rather than trajectories?),Request,Request.Clarification,N-Negative,Substance
+3670,2. Generalization issues,Structuring,Structuring.Heading,,
+3671,- the method is not applicable to episodes of different length,Evaluative,Evaluative,N-Negative,Replicability
+3672,- the approach assumes existence of a state to goal function f(s)->g,Structuring,Structuring.Quote,,
+3673,- although the paper does not expose this point (it is discussed the HER paper),Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3674,3. Scaling issues,Structuring,Structuring.Heading,,
+3675,- length of the vector grows linearly with the episode length,Structuring,Structuring.Heading,,
+3676,- length of the vector grows linearly with the size of the goal vector,Structuring,Structuring.Heading,,
+3677,For long episodes or episodes with large goal vectors it is quite possible that there will not be enough data to fit the GMM model or one would need to collect many samples prior.,Evaluative,Evaluative,U-Neutral,Substance
+3678,4. Minor issues,Structuring,Structuring.Heading,,
+3679,"- 3.3 ""It is known that PER can become very expensive in computational time"" - please supply a reference",Request,Request.Edit,U-Neutral,Clarity
+3680,"- 3.3 ""After each update of the model, the agent needs to update the priorities of the transitions in the replay buffer with the new TD-errors"" - However the method only renews priorities of randomly selected transitions (why would there be a large overhead?).",Request,Request.Clarification,U-Neutral,Soundness/Correctness
+3681,"Here is from the PER paper ""Our final implementation for rank-based prioritization produced an additional 2%-4% increase in running time and negligible additional memory usage""",Fact,Fact,,
+3682,Quality/clarity:,Structuring,Structuring.Heading,,
+3683,- The problem setting description is neither formal nor intuitive which made it very hard for me to understand exactly the problem you are trying to solve.,Evaluative,Evaluative,N-Negative,Clarity
+3684,Starting with S and i: I guess S and i are both simply varying-length sequences in U.,Fact,Fact,,
+3685,"- In general the intro should focus more on an intuitive (and/or formal) explanation of the problem setting, with some equations that explain the problem you want to work on. Right now it is too heavy on 'related work' (this is just my opinion).",Evaluative,Evaluative,N-Negative,Substance
+3686,Originality/Significance:,Structuring,Structuring.Heading,,
+3687,I have certainly never seen a ML-based paper on this topic.,Fact,Fact,,
+3688,The idea of 'learning' prior information about the heavy hitters seems original.,Evaluative,Evaluative,P-Positive,Originality
+3690,It seems like a creative and interesting place to use machine learning.,Evaluative,Evaluative,P-Positive,Motivation/Impact
+3691,the plots in Figure 5.2 seem promising.,Evaluative,Evaluative,P-Positive,Substance
+3693,- The formalization in Paragraph 3 of the Intro is not very formal. I guess S and i are both simply varying-length sequences in U.,Evaluative,Evaluative,N-Negative,Clarity
+3695,"-In describing Eqn 3 there are some weird remarks, e.g. ""N is the sum of all frequencies"". Do you mean that N is the total number of available frequencies? i.e.",Request,Request.Clarification,N-Negative,Clarity
+3696,should it be |D|? It's not clear to me that the sum of frequencies would be bounded if D is not discrete.,,,,
+3697,- Your F and \tilde{f} are introduced as infinite series.,Evaluative,Evaluative,N-Negative,Clarity
+3698,"Maybe they should be {f1, f2,..., fN}, i.e. N queries, each of which you are trying to be estimate.",,,,
+3699,"- In general, you have to introduce the notation much more carefully.",Evaluative,Evaluative,N-Negative,Clarity
+3700,Your audience should not be expected to be experts in hashing for this venue!,,,,
+3701,!,,,,
+3702,"'C[1,...,B]' is informal abusive notation.",Evaluative,Evaluative,N-Negative,Clarity
+3703,You should clearly state using both mathematical notation AND using sentences what each symbol means.,Evaluative,Evaluative,N-Negative,Clarity
+3704,"My understanding is that that h:U->b, is a function from universe U to natural number b, where b is an element from the discrete set {1,...,B}, to be used as an index for vector C. The algorithm maintains this vector C\in N^B (ie C is a B-length vector of natural numbers).",Fact,Fact,,
+3705,"In other words, h is mapping a varying-length sequence from U to an *index* of the vector C (a.k.a: a bin).",,,,
+3706,"Thus C[b] denotes the b-th element/bin of C, and C[h(i)] denotes the h(i)-th element.",,,,
+3707,"- Still it is unclear where 'fj' comes from. You need to state in words eg ""C[b] contains the accumulation of all fj's such that h(j)=b; i.e. for each sequence j \in U, if the hash function h maps the sequence to bin b (ie $h(j)=b$), then we include the *corresponding frequency* in the sum.""",Evaluative,Evaluative,N-Negative,Clarity
+3708,"- What I don't understand is how fj is dependent on h. When you say ""at the end of the stream"", you mean that given S, we are analyzing the frequency of a series of sequences {i_1,...,i_N}?",Evaluative,Evaluative,N-Negative,Clarity
+3709,"- Sorry, it's just confusing and I didn't really understand ""Single Hash Function"" from Sec 3.2 until I started typing this out.",,,,
+3710,"- The term ""sketch"" is used in Algorithm1, like 10, before 'sketch' is defined!!",Evaluative,Evaluative,N-Negative,Clarity
+3711,"-I'm not going to trudge through the proofs, because I don't think this is self-contained (and I'm clearly not an expert in the area).",Evaluative,Evaluative,N-Negative,Clarity
+3712,Conclusion:,Structuring,Structuring.Heading,,
+3713,"Honestly, this paper is very difficult to follow.",Evaluative,Evaluative,N-Negative,Clarity
+3714,"However to sum up the idea: you want to use deep learning techniques to learn some prior on the hash-estimation problem, in the form of a heavy-hitter oracle.",Fact,Fact,,
+3715,"It seems interesting and shows promising results, but the presentation has to be cleaned up for publication in a top ML venue.",Evaluative,Evaluative,N-Negative|P-Positive,Motivation/Impact|Clarity
+3716,******,Structuring,Structuring.Heading,,
+3717,Update after response:,Structuring,Structuring.Heading,,
+3718,"The authors have provided improvements to the introduction of the problem setting, satisfying most of my complaints from before. I am raising my score accordingly, since the paper does present some novel results.",Evaluative,Evaluative,P-Positive,Originality
+3736,"In this work the authors propose an extension of mixture density networks to the continuous domain, named compound density networks.",Structuring,Structuring.Summary,,
+3737,Specifically the paper builds on top of the idea of the ensemble neural networks (NNs) and introduces a stochastic neural network for handling the mixing components.,Structuring,Structuring.Summary,,
+3738,The mixing distribution is also parameterised by a neural network.,Structuring,Structuring.Summary,,
+3739,"The authors claim that the proposed model can result in better uncertainty estimates and the experiments attempt to demonstrate the benefits of the approach, especially in cases of having to deal with adversarial attacks.",Structuring,Structuring.Summary,,
+3740,The paper in general is well written and easy to follow.,Evaluative,Evaluative,P-Positive,Clarity
+3741,I have some concerns regarding the presentation of the main objective and the lack of justification in certain parts of the methodology.,Evaluative,Evaluative,N-Negative,Substance
+3742,Let me elaborate.,Other,Other,,
+3743,"First of all, I don’t understand how the main equation of the compound density network in Equation (3) is different from the general case of a Bayesian neural network? Can the authors please comment on that?",Request,Request.Explanation,N-Negative,Replicability
+3744,I also find weird the way that the authors arrive to their final objective in Equation (5).,Evaluative,Evaluative,N-Negative,Replicability
+3745,They start from Equation (4) which is incorrectly denoted as the log-marginal distribution while it is the same conditional distribution introduced in Equation (3) with the extra summation for all the available data points.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3746,Then they continue to Equation (5) which they present as the combination of the true likelihood with a KL regularisation term.,Evaluative,Evaluative,N-Negative,Replicability
+3747,"However, what the authors implicitly did was to perform variational inference for maximising their likelihood by introducing a variational distribution q(\theta) = p(\theta | g(x_n; \psi).",Evaluative,Evaluative,N-Negative,Replicability
+3748,Is there a reason why the authors do not introduce their objective by following the variational framework?,Request,Request.Explanation,N-Negative,Replicability
+3749,"Furthermore, in the beginning of Section 3.1 the authors present their idea on probabilistic hypernetoworks which “maps x to a distribution over parameters instead of specific value \theta.” How is this different from the case that we were considering so far? If we had a point estimate for \theta we would not require to take an expectation in Equation (3) in the first place.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3750,"My biggest concern in the methodology, however, has to do with the selection of the matrix variate normal prior for the weights and the imposition of diagonal covariances (diag(a) and diag(b)).",Evaluative,Evaluative,N-Negative,Replicability
+3751,"The Kronecker product between two diagonal matrices results in another diagonal matrix, i.e., diagonal covariance, which implies that the weights within a layer are given by an independent multivariate Gaussian.",Fact,Fact,,
+3752,What is the purpose then for introducing the matrix variate Gaussian?,Request,Request.Explanation,N-Negative,Replicability
+3753,I would expect that you would like to impose additional structure to the weights.,Other,Other,,
+3754,I expect the authors to comment on that.,Request,Request.Explanation,N-Negative,Replicability
+3755,Regarding the experimental evaluation of the model rather confusing.,Evaluative,Evaluative,N-Negative,Substance
+3756,The authors have proposed a model that due to the mixing is better suited for predictions with heteroscedastic noise and can better quantify the aleatoric uncertainty.,Fact,Fact,,
+3757,"However, the selected experiments on the cubic regression toy data (Section 5.1) and the out-of-distribution classification (Section 5.2) are clear examples of system’s noise, i.e. epistemic uncertainty.",Evaluative,Evaluative,N-Negative,Substance
+3758,The generative process of the toy data clearly states that there is no heteroscedastic noise to handle.,Fact,Fact,,
+3759,"The same applies for the notMNIST data which belong to a completely different data set compared to MNIST and thus out of sample prediction cannot benefit from the mixing; i.e., variations have to be explained by system’s noise.",Fact,Fact,,
+3760,So overall I have the feeling that the authors have not succeeded to evaluate the model’s power with these two experiments and we cannot draw any strong conclusions regarding the benefit of the proposed mixing approach.,Evaluative,Evaluative,N-Negative,Substance
+3761,"To continue with the experimental evaluation, I found the plots with the predictive uncertainty in Figure 3 a bit confusing.",Evaluative,Evaluative,N-Negative,Substance
+3762,"The plot by itself, as I understood, quantifies the model’s uncertainty in in- and out-of sample prediction.",Fact,Fact,,
+3763,"While I agree with the authors that it is generally desirable for a model to be more confident when predicting in MNIST (since it has already seen samples of it) compared to when predicting in notMNIST (completely different data), these plots tells us nothing regarding the predictive power of the model.",Evaluative,Evaluative,N-Negative,Substance
+3764,"There is no value in being very confident if you are wrong and vice-versa, so unless there is an accompanying plot/table reporting the accuracy I see not much value from this plot alone.",Evaluative,Evaluative,N-Negative,Substance
+3765,"Finally, it is unclear how the authors have picked the best \lambda parameter for their approach? On page 5 they state that they “pick the value that results in a good trade-off between high uncertainty estimates and high prediction accuracy.” Does this mean that you get to observe the performance in the test in order to select the appropriate value for \lambda? If this is the case this is completely undesirable and is considered a bad practice.",Request,Request.Explanation,N-Negative,Replicability
+3766,The paper proposes using the nested CRP as a clustering model rather than a topic model.,Structuring,Structuring.Summary,,
+3767,The clustering is on the latent vector input into a neural network for generating the observation.,Structuring,Structuring.Summary,,
+3768,A variational approach is derived.,Structuring,Structuring.Summary,,
+3769,The proposed model seems like a straightforward extension of the nCRP with a deep model hanging off the end of it.,Evaluative,Evaluative,N-Negative,Originality
+3770,"A significant concern/confusion for me is that this doesn't seem to be a mixed membership model, and so I don't know how meaningful it is to generate a level distribution from a Dirichlet and then draw from that mixture one time.",Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3771,From the generative model it seems every data point has its own Dirichlet vector on levels.,Fact,Fact,,
+3772,"For topic models this makes sense since that vector is then drawn from multiple times (once per word) from a Discrete, so there's a distribution to actually learn.",Fact,Fact,,
+3773,My understanding is that this isn't being done here.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3811,"The paper proposes doubly sparse, which is a sparse mixture of sparse experts and learns a two-level class hierarchy, for efficient softmax inference.",Structuring,Structuring.Summary,,
+3812,[+] It reduces computational cost compared to full softmax.,Evaluative,Evaluative,P-Positive,Substance
+3813,"[+] Ablation study is done for group lasso, expert lasso and load balancing, which help understand the effect of different components of the proposed",Evaluative,Evaluative,P-Positive,Substance
+3814,"[-] It seems to me the motivation is similar to that of Sparsely-Gated MoE (Shazeer et al. 2017), but it is not clear how the proposed two-hierarchy method is superior to the Sparsely-Gated MoE. It would be helpful the paper discuss more about this.",Evaluative,Evaluative,N-Negative,Originality
+3815,"Besides, in evaluation, the paper only compares Doubly Sparse with full softmax.",Evaluative,Evaluative,N-Negative,Substance
+3816,Why not compare with Sparsely-Gated MoE?,Request,Request.Experiment,N-Negative,Substance
+3817,"Overall, I think this paper is below the borderline of acceptance due to insufficient comparison with Sparsely-Gated MoE.",Evaluative,Evaluative,N-Negative,Substance
+3818,This paper presents a new method to measure the importance of hidden neurons in deep neural networks.,Structuring,Structuring.Summary,,
+3819,"The method integrates notions of activation value, input influence to a neuron and neuron influence to the network's output.",Structuring,Structuring.Summary,,
+3820,They provide results confirming that this measure is able to identify neurons that are important for specific tasks.,Structuring,Structuring.Summary,,
+3821,Quality,Structuring,Structuring.Heading,,
+3822,"The experiments are well designed to verify their hypothesis, although there could be more to make sure those results are not particular to the few selected problems.",Evaluative,Evaluative,P-Positive,Soundness/Correctness
+3823,"Nevertheless, the results are consistent across those experiments.",Evaluative,Evaluative,P-Positive,Soundness/Correctness
+3824,Clarity,Structuring,Structuring.Heading,,
+3825,"The text is well written in general, but the structure could be improved.",Evaluative,Evaluative,U-Neutral,Clarity
+3826,"The introduction contains too much related work, which should be divided in another section.",Evaluative,Evaluative,N-Negative,Clarity
+3827,"Section 2 contains mostly high level explanations of the work, which should be integrated in the introduction, and thus before the related work section, to improve readability.",Request,Request.Edit,U-Neutral,Clarity
+3828,See minor comments for more specific suggestions.,Structuring,Structuring.Heading,,
+3829,It is difficult to understand the goal of Section 4.2.,Evaluative,Evaluative,N-Negative,Clarity
+3830,"Section 2 states that section 4.2 proves that a ""path method"" must be used in order to satisfy the axioms, but why such axioms are important is not stressed enough.",Request,Request.Explanation,U-Neutral,Clarity
+3831,"Also, it is not clear why those are called axioms since they are not use to build anything else.",Evaluative,Evaluative,N-Negative,Clarity
+3832,"It seems to me that those are rather ""desirable properties"" than axioms.",Evaluative,Evaluative,U-Neutral,Other
+3833,Originality,Structuring,Structuring.Heading,,
+3834,A important number of related works are cited and compared with the current work.,Evaluative,Evaluative,P-Positive,Meaningful Comparison
+3835,"Although the proposed measure is close to what is proposed by Datta et al., this paper makes the distinction clear and benchmarks its results properly against it.",Evaluative,Evaluative,P-Positive,Meaningful Comparison
+3836,Significance,Structuring,Structuring.Heading,,
+3837,There is an increasing need to interpretability of deep neural networks as they get more and more applied to real-world problems.,Evaluative,Evaluative,U-Neutral,Motivation/Impact
+3838,Measures as the one proposed in this paper are a very important building block towards this.,Evaluative,Evaluative,P-Positive,Motivation/Impact
+3839,Conclusion,Structuring,Structuring.Heading,,
+3840,"For its original importance measure and the proper experiment benchmarks, I believe this paper should be accepted.",Evaluative,Evaluative,P-Positive,Originality
+3841,There is however many minor issues that should be fixed for the camera-ready version.,Request,Request.Edit,U-Neutral,Clarity
+3842,"Although the recommended length is 8 pages, the strict limit is 10, so I would recommended to use a bit of the remaining extra space to conclude the paper properly with a discussion on the results and their consequences, as well as a conclusion to wrap up the paper.",Request,Request.Edit,U-Neutral,Clarity
+3843,***,Other,Other,,
+3844,Minor Comments,Structuring,Structuring.Heading,,
+3845,Introduction:,Structuring,Structuring.Heading,,
+3846,"- The term flow is never defined precisely, we need to infer it",Request,Request.Clarification,U-Neutral,Clarity
+3847,based on the definition of conductance and attribution.,,,,
+3848,- First paragraph would be more clear with simple word explanation rather than maths.,Request,Request.Clarification,U-Neutral,Clarity
+3849,"Also, second sentence is not a complete sentence",Evaluative,Evaluative,N-Negative,Clarity
+3850,- Work on image indicators of importance could be compared better with current work.,Request,Request.Edit,U-Neutral,Meaningful Comparison
+3851,Indicators can be seen as a measure of importance.,Evaluative,Evaluative,U-Neutral,Substance
+3852,"- This sentence is not clear: ""[...]; the nature of correlations in the two models may differ"".",Request,Request.Edit,U-Neutral,Clarity
+3853,Section 2:,Structuring,Structuring.Heading,,
+3854,- Last paragraph of section 2 can be true for any well-performing importance measure.,Evaluative,Evaluative,U-Neutral,Soundness/Correctness
+3855,The statements should be put in perspective with others.,Request,Request.Edit,U-Neutral,Clarity
+3856,Section 3:,Structuring,Structuring.Heading,,
+3857,- Section 3 should be introduced by explaining the goal of the section otherwise it breaks the flow of reading.,Request,Request.Edit,U-Neutral,Clarity
+3858,- The role of the baseline x' should be better explained when it is presented (first paragraph of section 3).,Request,Request.Edit,U-Neutral,Clarity
+3859,"- The interchangeable use of the term ""conductance of neuron j"" for equations 2 and 3 is confusing.",Evaluative,Evaluative,N-Negative,Clarity
+3860,"Different terms should be use, even if the context makes it possible to infer which one is being referred to.",Request,Request.Edit,U-Neutral,Clarity
+3861,"- Remark 1 seems trivial, but the selection of baseline x' seems less trivial.",Evaluative,Evaluative,U-Neutral,Clarity
+3862,Some explanations should be devoted to it.,Request,Request.Explanation,U-Neutral,Clarity
+3863,- Second paragraph of remark 1 is not clear.,Evaluative,Evaluative,U-Neutral,Clarity
+3864,"Why couldn't we take another layer's neuron as the neuron of interest, bounding the conductance measure on one layer as the input and the output of the model? If we make the input to be a neuron y rather than the true input x, we could take another neuron z in a subsequent layer to be the neuron of interest, resulting in conductance measure Cond^z_i(y).",Request,Request.Explanation,U-Neutral,Clarity
+3865,Section 4:,Structuring,Structuring.Heading,,
+3866,- List of importance measure at beginning of Section 4 should probably have citations.,Request,Request.Edit,U-Neutral,Meaningful Comparison
+3867,"- Backward reference to section 3 seems to be a mistake, should it be subsection 4.2?",Request,Request.Edit,U-Neutral,Clarity
+3868,- Each of the justifications to get around the issue of distinguishing strange model behavior from bad feature importance technique should be explained briefly in paragraph before section 4.1.,Request,Request.Explanation,U-Neutral,Clarity
+3869,Subsection 4.1:,Structuring,Structuring.Heading,,
+3870,- I do not understand the problem explained in fourth paragraph of section 4.1.,Evaluative,Evaluative,U-Neutral,Clarity
+3871,"g(f(1 - epsilon)) = 0, why would it be 1- epsilon?",Request,Request.Typo,U-Neutral,Clarity
+3872,- Problem explained in fifth Paragraph of section is not clear unless what the influence of the unit is clearly stated. Is it simply dg/df?,Request,Request.Clarification,U-Neutral,Clarity
+3873,- A short explanation of what is tested in section 6 should be given at last paragraph of section 4.1.,Request,Request.Explanation,U-Neutral,Clarity
+3874,"Although the results are favorable to the conductance metric, it is not clear how they precisely confirm the problem of incorrect signs presented in the caricature examples.",Request,Request.Explanation,U-Neutral,Substance
+3875,Subsection 4.2:,Structuring,Structuring.Heading,,
+3876,"- As said in the my main comments, I am not convinced by the use of the term Axiom. They are not use as building blocks, and are rather used as desirable properties for which the authors prove that only ""path methods"" can satisfy.",Evaluative,Evaluative,N-Negative,Clarity
+3877,- Footnote 2 on page 5 it difficult to read.,Request,Request.Edit,N-Negative,Clarity
+3878,"- Although the proof does not seem to use the axioms as a building block, which is fortunate since it would make it a circular argument otherwise, the text suggests so: ""Given these three axioms, we can show that:"".",Evaluative,Evaluative,U-Neutral,Clarity
+3879,- The importance of section 4.2 should be clarified.,Request,Request.Clarification,U-Neutral,Clarity
+3880,More emphasis on the importance of the axioms (desirable properties) should be made.,Request,Request.Edit,U-Neutral,Clarity
+3881,Section 5:,Structuring,Structuring.Heading,,
+3882,- Choices for experiments should be explained. Why choosing layers mixed** rather than others? Why choosing filters?,Request,Request.Explanation,U-Neutral,Clarity
+3883,- Figures 1-4 are difficult to interpreted on a printed version.,Evaluative,Evaluative,N-Negative,Clarity
+3884,"Since this is qualitative, I suggest to change the saturation of the images to make them easier to interpret.",Request,Request.Edit,U-Neutral,Clarity
+3885,The absolute values are not important for a qualitative interpretation,Evaluative,Evaluative,U-Neutral,Substance
+3886,"- Figure 4 could be more interesting if compared with other classes, like other animal faces.",Request,Request.Experiment,U-Neutral,Substance
+3887,"Anyhow, I understand that those were chosen based on the subset of classes used for the experiments.",Social,Social,,
+3888,- Space should be added between figures to better divide the captions,Request,Request.Edit,U-Neutral,Clarity
+3889,Section 6:,Structuring,Structuring.Heading,,
+3890,- The difference between experiments of Figure 5 and 6 should be made more clear.,Request,Request.Edit,U-Neutral,Clarity
+3891,Section 7-8:,Structuring,Structuring.Heading,,
+3892,- Where are they? No discussion? No conclusion?,Request,Request.Explanation,U-Neutral,Other
+3902,"This paper proposes a Self-Modulation framework for the generator network in GANs, where middle layers are directly modulated as a function of the generator input z.",Fact,Fact,,
+3903,"Specifically, the method is derived via batch normalization (BN), i.e. the learnable scale and shift parameters in BN are assumed to depend on z, through a small one-hidden layer MLP.",Fact,Fact,,
+3904,"This idea is something new, although quite straight-forward.",Evaluative,Evaluative,P-Positive,Originality
+3905,"Extensive experiments with varying losses, architectures, hyperparameter settings are conducted to show self-modulation improves baseline GAN performance.",Evaluative,Evaluative,P-Positive,Substance
+3906,"The paper is mainly empirical, although the authors compute two diagnostic statistics to show the effect of the self-modulation method.",Evaluative,Evaluative,P-Positive,Substance
+3907,It is still not clear why self-modulation stabilizes the generator towards small conditioning values.,Evaluative,Evaluative,N-Negative,Clarity
+3908,The paper presents two loss functions at the beginning of section 3.1 - the non-saturating loss and the hinge loss.,Fact,Fact,,
+3909,"It should be pointed out that the D in the hinge loss represents a neural network output without range restriction, while the D in the non-saturating loss represents sigmoid output, limiting to take in [0,1].",Request,Request.Edit,N-Negative,Substance
+3910,It seems that the authors are not aware of this difference.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3911,"In addition to report the median scores, standard deviations should be reported.",Request,Request.Experiment,N-Negative,Substance
+3912,===========,Structuring,Structuring.Heading,,
+3913,comments after reading response ===========,Structuring,Structuring.Heading,,
+3914,I do not see in the updated paper that this typo (in differentiating D in hinge loss and non-saturating loss) is corrected.,Evaluative,Evaluative,N-Negative,Soundness/Correctness
+3915,"Though fundamental understanding can happen asynchronously, I reserve my concern that such empirical method is not substantial enough to motivate acceptance in ICLR, especially considering that in (only) 124/144 (86%) of the studied settings, the results are improved. And there is no analysis of the failure settings.",Evaluative,Evaluative,N-Negative,Substance
+3916,Brief summary:,Structuring,Structuring.Summary,,
+3917,"This paper presents a deep decoder model which given a target natural image and a random noise tensor learns to decode the noise tensor into the target image by a series of 1x1 convolutions, RELUs, layer wise normalizations and upsampling.",Structuring,Structuring.Summary,,
+3918,"The parameter of the convolution are fitted to each target image, where the source noise tensor is fixed.",Structuring,Structuring.Summary,,
+3919,The method is shown to serve as a good model for natural image for a variety of image processing tasks such as denoising and compression.,Structuring,Structuring.Summary,,
+3921,* an interesting model which is quite intriguing in its simplicity.,Evaluative,Evaluative,P-Positive,Originality
+3922,* good results and good analysis of the model,Evaluative,Evaluative,P-Positive,Soundness/Correctness
+3923,* mostly clear writing and presentation (few typos etc. nothing too serious).,Evaluative,Evaluative,P-Positive,Clarity
+3924,Cons and comments:,Structuring,Structuring.Summary,,
+3925,* The author say explicitly that this is not a convolutional model because of the use of 1x1 convolutions.,Fact,Fact,,
+3926,I disagree and I actually think this is important for two reasons.,Evaluative,Evaluative,U-Neutral,Substance
+3927,"First, though these are 1x1 convolutions, because of the up-sampling operation and the layer wise normalizations the influence of each operation goes beyond the 1x1 support.",Fact,Fact,,
+3928,"Furthermore, and more importantly is the weight sharing scheme induced by this - using convolutions is a very natural choice for natural images (no pun intended) due to the translation invariant statistics of natural images.",Fact,Fact,,
+3929,I doubt this would have worked so well hadn't it been modeled this way (not to mention this allows a small number of parameters).,Evaluative,Evaluative,U-Neutral,Substance
+3930,* The upsampling analysis is interesting but it is only done on synthetic data - will the result hold for natural images as well? should be easy to try and will allow a better understanding of this choice.,Request,Request.Experiment,U-Neutral,Substance
+3931,Natural images are only approximately piece-wise smooth after all.,Fact,Fact,,
+3932,"* The use of the name ""batch-norm"" for the layer wise normalization is both wrong and misleading.",Evaluative,Evaluative,N-Negative,Clarity
+3933,"This is just channel-wise normalization with some extra parameters - no need to call it this way (even if it's implemented with the same function) as there is no ""batch"".",Request,Request.Edit,U-Neutral,Clarity
+3934,* I would have loved to see actual analysis of the method's performance as a function of the noise standard deviation.,Request,Request.Edit,U-Neutral,Substance
+3935,"Specifically, for a fixed k, how would performance increase or decrease, and vice versa - for a given noise level, how would k affect performance.",Request,Request.Explanation,U-Neutral,Substance
+3936,* The actual standard deviation of the noise is not mentioned in any of the experiments (as far as I could tell),Request,Request.Clarification,U-Neutral,Clarity
+3937,* What does the decoder produce when taking a trained C on a given image and changing the source noise tensor?,Request,Request.Experiment,U-Neutral,Substance
+3938,"I think that would shed light on what structures are learned and how they propagated in the image, possibly more than Figure 6 (which should really have something to compare to because it's not very informative out of context).",Request,Request.Clarification,U-Neutral,Clarity
