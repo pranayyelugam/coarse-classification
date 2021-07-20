@@ -1,7 +1,5 @@
 import csv
 import config
-import dataset
-import engine
 import torch
 import pandas as pd
 import torch.nn as nn
@@ -9,17 +7,16 @@ import numpy as np
 import sys
 import json
 
+import classification_lib
+
 from model import BERTBaseUncased
 from sklearn import model_selection
 from sklearn import metrics
 from transformers import AdamW
 from transformers import get_linear_schedule_with_warmup
+from transformers import logging
 
-import logging
-logging.basicConfig(level=logging.ERROR)
-
-with open("labels.json", 'r') as f:
-  label_map = json.load(f)
+logging.set_verbosity_error()
 
 def preprocess(filename, label):
   dicts = []
@@ -30,7 +27,7 @@ def preprocess(filename, label):
       dicts.append({
         'sentence': row["sentence"],
         label: row[label],
-        'ENCODE_CAT': label_map[label].index(row[label])
+        'ENCODE_CAT': classification_lib.LABEL_MAP[label].index(row[label])
         })
   return pd.DataFrame.from_dict(dicts)
 
@@ -45,7 +42,7 @@ def monitor_metrics(outputs, targets):
 
 def process_dataset(df, batch_size, num_workers):
   df = df.reset_index(drop=True)
-  this_dataset = dataset.BERTDataset(
+  this_dataset = classification_lib.BERTDataset(
         review=df.sentence.values, target=df.ENCODE_CAT.values
     )
   data_loader = torch.utils.data.DataLoader(
@@ -56,7 +53,7 @@ def get_num_train_steps(train_filename, label):
   df = preprocess(train_filename, label)
   return int(len(df) / config.TRAIN_BATCH_SIZE * config.EPOCHS)
 
-def run():
+def main():
 
     train_filename, label = sys.argv[1:3]
 
@@ -117,10 +114,15 @@ def run():
 
     best_accuracy = 0
     for epoch in range(config.EPOCHS):
-        engine.train_fn(
-            dataloaders["train"], model, optimizer, device, scheduler, epoch)
-        outputs, targets = engine.eval_fn(
+        train_outputs, train_targets = classification_lib.train_eval_fn(
+            classification_lib.ModelMode.TRAIN,
+            dataloaders["train"], model, device, epoch, optimizer,
+            scheduler)
+        outputs, targets = classification_lib.train_eval_fn(
+            classification_lib.ModelMode.EVAL,
             dataloaders['dev'], model, device, epoch)
+        train_accuracy =  metrics.accuracy_score(train_outputs, train_targets)
+        print(f"Train Accuracy  = {train_accuracy}")
         accuracy =  metrics.accuracy_score(outputs, targets)
         print(f"Validation Accuracy  = {accuracy}")
         if accuracy > best_val_accuracy:
@@ -134,7 +136,8 @@ def run():
 
     model.load_state_dict(torch.load(model_path))
     for subset in ['train', 'dev', 'test']:
-      outputs, targets = engine.eval_fn(
+      outputs, targets = classification_lib.train_eval_fn(
+            classification_lib.ModelMode.EVAL,
             dataloaders[subset], model, device, epoch)
 
       result_df_dicts = []
@@ -154,4 +157,4 @@ def run():
 
 
 if __name__ == "__main__":
-    run()
+    main()
